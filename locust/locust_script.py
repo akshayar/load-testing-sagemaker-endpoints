@@ -13,6 +13,7 @@ from locust import task, events
 region = os.environ["REGION"]
 content_type = os.environ["CONTENT_TYPE"]
 payload = os.environ["PAYLOAD"]
+max_new_tokens = os.environ["MAX_NEW_TOKENS"]
 
 
 class BotoClient:
@@ -27,7 +28,7 @@ class BotoClient:
         self.content_type = content_type
         with open("test.txt", "r") as f:
             self.sampPayloads = f.read().splitlines()
-        self.payload = json.dumps({"inputs": random.choice(self.sampPayloads)})
+        self.payload = json.dumps({"inputs": random.choice(self.sampPayloads), "parameters": {"max_new_tokens": max_new_tokens}})
 
     def send(self):
 
