@@ -1,7 +1,9 @@
 #!/bin/bash
 function default_if_empty() {
     if [ -z "$2" ]; then
-        echo "$1"
+      echo "$1"
+    else
+      echo "$2"
     fi
 }
 #replace with your endpoint name in format <<endpoint-name>>
@@ -11,10 +13,10 @@ if  [ -z "$ENDPOINT_NAME" ]; then
     echo "Usage ./distributed.sh <<endpoint-name>> [config.sh]"
     exit 1
 fi
-export PROPERTIES_FILE=$(default_if_empty config.sh "$2")
+export PROPERTIES_FILE=$(default_if_empty config.sh $2)
 source "${PROPERTIES_FILE}"
 
-export USE_CASE=$(default_if_empty test "${USE_CASE}")
+export USE_CASE=$(default_if_empty test "$USE_CASE")
 export CONTENT_TYPE=$(default_if_empty application/json "${CONTENT_TYPE}")
 export RUN_TIME=$(default_if_empty 10m "${RUN_TIME}")
 export PAYLOAD_FILE=$(default_if_empty test.txt "${PAYLOAD_FILE}")
