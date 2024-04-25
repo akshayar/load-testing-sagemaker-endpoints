@@ -8,10 +8,10 @@ function default_if_empty() {
 export ENDPOINT_NAME=$1
 if  [ -z "$ENDPOINT_NAME" ]; then
     echo "Endpoint name not provided"
-    echo "Usage ./distributed.sh <<endpoint-name>> [config.properties]"
+    echo "Usage ./distributed.sh <<endpoint-name>> [config.sh]"
     exit 1
 fi
-export PROPERTIES_FILE=$(default_if_empty config.properties "$2")
+export PROPERTIES_FILE=$(default_if_empty config.sh "$2")
 source "${PROPERTIES_FILE}"
 
 export USE_CASE=$(default_if_empty test "${USE_CASE}")
