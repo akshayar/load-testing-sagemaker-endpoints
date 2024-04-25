@@ -32,6 +32,11 @@ class BotoClient:
             self.sampPayloads = f.read().splitlines()
         self.payload = json.dumps({"inputs": random.choice(self.sampPayloads), "parameters": {"max_new_tokens": self.max_new_tokens}})
 
+    def get_next_string(iterator):
+        try:
+            return next(iterator)["PayloadPart"]["Bytes"].decode('utf-8').strip()
+        except StopIteration:
+            print("done")
     def send(self):
         request_meta = {
             "request_type": "InvokeEndpoint",
@@ -52,8 +57,13 @@ class BotoClient:
                 ContentType=self.content_type,
             )
             iterator = iter(response["Body"])
-            chunk = next(iterator)
-            logging.info(chunk)
+            chunk = self.get_next_string(iterator)
+            while True:
+                chunk = self.get_next_string(iterator)
+                if len(chunk) !=0:
+                    logging.info(chunk)
+                    break
+
         except Exception as e:
             request_meta["exception"] = e
 
