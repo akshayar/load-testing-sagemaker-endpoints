@@ -32,7 +32,7 @@ class BotoClient:
             self.sampPayloads = f.read().splitlines()
         self.payload = json.dumps({"inputs": random.choice(self.sampPayloads), "parameters": {"max_new_tokens": self.max_new_tokens}})
 
-    def get_next_string(iterator):
+    def get_next_string(self,iterator):
         try:
             return next(iterator)["PayloadPart"]["Bytes"].decode('utf-8').strip()
         except StopIteration:
