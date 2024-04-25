@@ -1,51 +1,59 @@
 #!/bin/bash
+function default_if_empty() {
+    if [ -z "$2" ]; then
+        echo "$1"
+    fi
+}
 #replace with your endpoint name in format <<endpoint-name>>
 export ENDPOINT_NAME=$1
-export CONTENT_TYPE=application/json
-export RUN_TIME=10m
-export USE_CASE=$2
+if  [ -z "$ENDPOINT_NAME" ]; then
+    echo "Endpoint name not provided"
+    echo "Usage ./distributed.sh <<endpoint-name>> [config.properties]"
+    exit 1
+fi
+export PROPERTIES_FILE=$(default_if_empty config.properties "$2")
+source "${PROPERTIES_FILE}"
 
-if [ -z "$PAYLOAD_FILE" ]; then
-    export PAYLOAD_FILE=test.txt
-    echo "PAYLOAD_FILE was empty, setting it to $PAYLOAD_FILE"
-fi
-if [ -z "$USE_CASE" ]; then
-    export USE_CASE=test
-    echo "USE_CASE was empty, setting it to $USE_CASE"
-fi
-#Check if $REGION is empty, if empty set it to us-east-1
-if [ -z "$REGION" ]; then
-    export REGION=us-east-1
-    echo "REGION was empty, setting it to $REGION"
-fi
-if [ -z "$USERS" ]; then
-    export USERS=10
-    echo "USERS was empty, setting it to $USERS"
-fi
-if [ -z "$WORKERS" ]; then
-    export WORKERS=10
-    echo "WORKERS was empty, setting it to $WORKERS"
-fi
-if [ -z "$LOCUST_UI" ]; then
-    export LOCUST_UI=false # Use Locust UI
-    echo "LOCUST_UI was empty, setting it to $LOCUST_UI"
-fi
-if [ -z "$MAX_NEW_TOKENS" ]; then
-    export MAX_NEW_TOKENS=256
-    echo "MAX_NEW_TOKENS was empty, setting it to $MAX_NEW_TOKENS"
-fi
+export USE_CASE=$(default_if_empty test "${USE_CASE}")
+export CONTENT_TYPE=$(default_if_empty application/json "${CONTENT_TYPE}")
+export RUN_TIME=$(default_if_empty 10m "${RUN_TIME}")
+export PAYLOAD_FILE=$(default_if_empty test.txt "${PAYLOAD_FILE}")
+export REGION=$(default_if_empty us-east-1 "${REGION}")
+export USERS=$(default_if_empty 10 "${USERS}")
+export WORKERS=$(default_if_empty 10 "${WORKERS}")
+export LOCUST_UI=$(default_if_empty false "${LOCUST_UI}")
+export MAX_NEW_TOKENS=$(default_if_empty 256 "${MAX_NEW_TOKENS}")
+export SCRIPT=$(default_if_empty locust_script.py "${SCRIPT}")
+
 ## Create a string with DDMMYYYYHHmmSS format
 export TIMESTAMP=$(date +%d%m%Y%H%M%S)
 
-
 #replace with the locust script that you are testing, this is the locust_script that will be used to make the InvokeEndpoint API calls.
-export SCRIPT=locust_script.py
+
 mkdir -p  results
 mkdir -p  logs
 export LOG_FILE=logs/${USE_CASE}_"$TIMESTAMP".log
 export STD_OUT=logs/${USE_CASE}_"$TIMESTAMP".out
 export RESULT_FILE=results/${USE_CASE}_"$TIMESTAMP"
 export HTML_RESULT_FILE=results/${USE_CASE}_"$TIMESTAMP".html
+
+echo "ENDPOINT_NAME: $ENDPOINT_NAME"
+echo "USE_CASE: $USE_CASE"
+echo "CONTENT_TYPE: $CONTENT_TYPE"
+echo "RUN_TIME: $RUN_TIME"
+echo "PAYLOAD_FILE: $PAYLOAD_FILE"
+echo "REGION: $REGION"
+echo "USERS: $USERS"
+echo "WORKERS: $WORKERS"
+echo "LOCUST_UI: $LOCUST_UI"
+echo "MAX_NEW_TOKENS: $MAX_NEW_TOKENS"
+echo "TIMESTAMP: $TIMESTAMP"
+echo "LOG_FILE: $LOG_FILE"
+echo "STD_OUT: $STD_OUT"
+echo "RESULT_FILE: $RESULT_FILE"
+echo "HTML_RESULT_FILE: $HTML_RESULT_FILE"
+echo "SCRIPT: $SCRIPT"
+
 
 #make sure you are in a virtual environment
 #. ./venv/bin/activate
