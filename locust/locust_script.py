@@ -43,13 +43,13 @@ class BotoClient:
         start_perf_counter = time.perf_counter()
 
         try:
-            logging.info(self.payload)
+            logging.debug(self.payload)
             response = self.sagemaker_client.invoke_endpoint(
                 EndpointName=self.endpoint_name,
                 Body=self.payload,
                 ContentType=self.content_type,
             )
-            logging.info(response["Body"].read())
+            logging.debug(response["Body"].read())
         except Exception as e:
             request_meta["exception"] = e
 
