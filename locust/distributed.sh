@@ -4,6 +4,11 @@ export ENDPOINT_NAME=$1
 export CONTENT_TYPE=application/json
 export RUN_TIME=1mg
 export USE_CASE=$2
+
+if [ -z "$PAYLOAD_FILE" ]; then
+    export PAYLOAD_FILE=test.txt
+    echo "PAYLOAD_FILE was empty, setting it to $PAYLOAD_FILE"
+fi
 if [ -z "$USE_CASE" ]; then
     export USE_CASE=test
     echo "USE_CASE was empty, setting it to $USE_CASE"
