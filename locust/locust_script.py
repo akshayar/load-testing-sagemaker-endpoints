@@ -62,7 +62,7 @@ class BotoClient:
         time_per_token=response_time_ms/max_new_tokens
         request_meta["response_time"] = response_time_ms
         logging.info("response_time_ms=%s,time_per_word=%s, time_per_token=%s, string_len=%s",
-                     response_time_ms, time_per_word, time_per_token, string_len)
+                     str(response_time_ms), str(time_per_word), str(time_per_token), str(string_len))
         events.request.fire(**request_meta)
 
 
