@@ -81,6 +81,7 @@ class BotoClient:
         request_meta["start_perf_counter"] = start_perf_counter
 
         try:
+            logging.info("Sending request to SageMaker streaming")
             logging.debug(self.payload)
             response = self.sagemaker_client.invoke_endpoint_with_response_stream(
                 EndpointName=self.endpoint_name,
