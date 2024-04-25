@@ -31,9 +31,13 @@ export SCRIPT=locust_script.py
 #. ./venv/bin/activate
 # if LOCUST_UI is false, then run the locust script in headless mode
 if $LOCUST_UI ; then
-    locust -f $SCRIPT -H $ENDPOINT_NAME --master --expect-workers $WORKERS -u $USERS -t $RUN_TIME --csv results"$TIMESTAMP" --html results"$TIMESTAMP".html &
+    locust -f $SCRIPT -H $ENDPOINT_NAME --master --expect-workers $WORKERS -u $USERS -t $RUN_TIME \
+    --loglevel INFO --logfile results"$TIMESTAMP".log \
+    --csv results"$TIMESTAMP" --html results"$TIMESTAMP".html &
 else
-    locust -f $SCRIPT -H $ENDPOINT_NAME --master --expect-workers $WORKERS -u $USERS -t $RUN_TIME --csv results"$TIMESTAMP" --headless -t 20m --html results"$TIMESTAMP".html &
+    locust -f $SCRIPT -H $ENDPOINT_NAME --master --expect-workers $WORKERS -u $USERS -t $RUN_TIME \
+    --loglevel INFO --logfile results"$TIMESTAMP".log \
+    --csv results"$TIMESTAMP" --headless --html results"$TIMESTAMP".html &
 fi
 
 for (( c=1; c<=$WORKERS; c++ ))
