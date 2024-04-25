@@ -20,6 +20,10 @@ if [ -z "$LOCUST_UI" ]; then
     export LOCUST_UI=false # Use Locust UI
     echo "LOCUST_UI was empty, setting it to $LOCUST_UI"
 fi
+if [ -z "$MAX_NEW_TOKENS" ]; then
+    export MAX_NEW_TOKENS=256
+    echo "MAX_NEW_TOKENS was empty, setting it to $MAX_NEW_TOKENS"
+fi
 ## Create a string with DDMMYYYYHHmmSS format
 export TIMESTAMP=$(date +%d%m%Y%H%M%S)
 
