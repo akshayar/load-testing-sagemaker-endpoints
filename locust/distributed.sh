@@ -29,14 +29,16 @@ export SCRIPT=locust_script.py
 
 #make sure you are in a virtual environment
 #. ./venv/bin/activate
-
-if $LOCUST_UI ; then
+# if LOCUST_UI is false, then run the locust script in headless mode
+if [ "$LOCUST_UI" = false ]; then
+    echo "Running locust script in interactive mode"
     locust -f $SCRIPT -H $ENDPOINT_NAME --master --expect-workers $WORKERS -u $USERS -t $RUN_TIME --csv results"$TIMESTAMP" --html results"$TIMESTAMP".html &
     for (( c=1; c<=$WORKERS; c++ ))
     do
         locust -f $SCRIPT -H $ENDPOINT_NAME --worker --master-host=localhost &
     done
 else
+    echo "Running locust script in headless mode"
     locust -f $SCRIPT -H $ENDPOINT_NAME --master --expect-workers $WORKERS -u $USERS -t $RUN_TIME --csv results"$TIMESTAMP" --headless -t 20m --html results"$TIMESTAMP".html &
 fi
 
