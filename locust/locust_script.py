@@ -32,9 +32,7 @@ class BotoClient:
         log_file = os.environ["LOG_FILE"]
         logging.basicConfig(filename=log_file)
 
-
-def send(self):
-
+    def send(self):
         request_meta = {
             "request_type": "InvokeEndpoint",
             "name": "SageMaker",
