@@ -26,7 +26,7 @@ class BotoClient:
         self.sagemaker_client = boto3.client("sagemaker-runtime", config=config)
         self.endpoint_name = host.split("/")[-1]
         self.content_type = content_type
-        self.max_new_tokens = max_new_tokens
+        self.max_new_tokens = int(max_new_tokens)
         with open("test.txt", "r") as f:
             self.sampPayloads = f.read().splitlines()
         self.payload = json.dumps({"inputs": random.choice(self.sampPayloads), "parameters": {"max_new_tokens": self.max_new_tokens}})
