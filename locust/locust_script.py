@@ -41,6 +41,7 @@ class BotoClient:
             "exception": None,
         }
         start_perf_counter = time.perf_counter()
+        string_len=1
 
         try:
             logging.debug(self.payload)
