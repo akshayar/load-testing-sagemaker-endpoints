@@ -31,12 +31,13 @@ export SCRIPT=locust_script.py
 #. ./venv/bin/activate
 
 if $LOCUST_UI ; then
-    locust -f $SCRIPT -H $ENDPOINT_NAME --master --expect-workers $WORKERS -u $USERS -t $RUN_TIME --csv results-$TIMESTAMP &
+    locust -f $SCRIPT -H $ENDPOINT_NAME --master --expect-workers $WORKERS -u $USERS -t $RUN_TIME --csv results"$TIMESTAMP" --html results"$TIMESTAMP".html &
+    for (( c=1; c<=$WORKERS; c++ ))
+    do
+        locust -f $SCRIPT -H $ENDPOINT_NAME --worker --master-host=localhost &
+    done
 else
-    locust -f $SCRIPT -H $ENDPOINT_NAME --master --expect-workers $WORKERS -u $USERS -t $RUN_TIME --csv results-$TIMESTAMP --headless &
+    locust -f $SCRIPT -H $ENDPOINT_NAME --master --expect-workers $WORKERS -u $USERS -t $RUN_TIME --csv results"$TIMESTAMP" --headless -t 20m --html results"$TIMESTAMP".html &
 fi
 
-for (( c=1; c<=$WORKERS; c++ ))
-do 
-    locust -f $SCRIPT -H $ENDPOINT_NAME --worker --master-host=localhost &
-done
+
