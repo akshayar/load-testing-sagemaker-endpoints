@@ -29,7 +29,7 @@ class TokenIterator:
         return self
 
     def __next__(self):
-        print("iterating")
+        logging.info("iterating")
         try:
             while True:
                 self.buffer.seek(self.read_pos)
@@ -46,10 +46,11 @@ class TokenIterator:
                     string=line.decode('utf-8')
                     self.first_token_time=time.perf_counter()
                     self.request_meta["first_token_time"] = (time.perf_counter() - self.request_meta["start_perf_counter"]) * 1000
+                    logging.info(line)
                     return line
         except StopIteration:
             self.request_meta["last_token_time"] = (time.perf_counter() - self.request_meta["start_perf_counter"]) * 1000
-            print("The iterator is finished.")
+            logging.info("The iterator is finished.")
             raise StopIteration("done")
 
 class BotoClient:
