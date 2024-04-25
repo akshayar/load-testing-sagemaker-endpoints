@@ -38,6 +38,7 @@ export SCRIPT=locust_script.py
 mkdir -p  results
 mkdir -p  logs
 export LOG_FILE=logs/${USE_CASE}_"$TIMESTAMP".log
+export STD_OUT=logs/${USE_CASE}_"$TIMESTAMP".out
 export RESULT_FILE=results/${USE_CASE}_"$TIMESTAMP"
 export HTML_RESULT_FILE=results/${USE_CASE}_"$TIMESTAMP".html
 
@@ -47,11 +48,11 @@ export HTML_RESULT_FILE=results/${USE_CASE}_"$TIMESTAMP".html
 if $LOCUST_UI ; then
     locust -f $SCRIPT -H $ENDPOINT_NAME --master --expect-workers $WORKERS -u $USERS -t $RUN_TIME \
     --loglevel INFO --logfile ${LOG_FILE} \
-    --csv ${RESULT_FILE} --html ${HTML_RESULT_FILE} &
+    --csv ${RESULT_FILE} --html ${HTML_RESULT_FILE} >> $STD_OUT &
 else
     locust -f $SCRIPT -H $ENDPOINT_NAME --master --expect-workers $WORKERS -u $USERS -t $RUN_TIME \
     --loglevel INFO --logfile ${LOG_FILE} \
-    --csv ${RESULT_FILE} --headless --html ${HTML_RESULT_FILE} &
+    --csv ${RESULT_FILE} --headless --html ${HTML_RESULT_FILE} >> $STD_OUT &
 fi
 
 for (( c=1; c<=$WORKERS; c++ ))

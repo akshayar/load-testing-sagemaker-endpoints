@@ -13,8 +13,6 @@ region = os.environ["REGION"]
 content_type = os.environ["CONTENT_TYPE"]
 payload = os.environ["PAYLOAD"]
 max_new_tokens = os.environ["MAX_NEW_TOKENS"]
-log_file = os.environ["LOG_FILE"]
-logging.basicConfig(filename=log_file)
 
 
 class BotoClient:
