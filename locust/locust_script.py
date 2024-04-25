@@ -49,14 +49,17 @@ class BotoClient:
                 Body=self.payload,
                 ContentType=self.content_type,
             )
+            response_string=response["Body"].read().decode("utf8")
+            generated_string=json.loads(body)["generated_text"]
+            string_len=len(generated_string.split())
             logging.debug(response["Body"].read())
         except Exception as e:
             request_meta["exception"] = e
 
-        request_meta["response_time"] = (
-            time.perf_counter() - start_perf_counter
-        ) * 1000
-
+        response_time_ms=(time.perf_counter() - start_perf_counter)*1000
+        response_time_per_word=response_time_ms/string_len
+        request_meta["response_time"] = response_time_ms
+        request_meta["response_time_per_word"] = response_time_ms
         events.request.fire(**request_meta)
 
 
