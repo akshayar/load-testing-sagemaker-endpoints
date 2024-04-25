@@ -60,7 +60,7 @@ class BotoClient:
         response_time_ms=(time.perf_counter() - start_perf_counter)*1000
         response_time_per_word=response_time_ms/string_len
         request_meta["response_time"] = response_time_ms
-        request_meta["response_time_per_word"] = response_time_ms
+        logging.info("response_time_per_word="+str(response_time_per_word))
         events.request.fire(**request_meta)
 
 
