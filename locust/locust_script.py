@@ -51,9 +51,9 @@ class BotoClient:
                 ContentType=self.content_type,
             )
             response_string=response["Body"].read().decode("utf8")
-            generated_string=json.loads(body)["generated_text"]
+            generated_string=json.loads(response_string)["generated_text"]
             string_len=len(generated_string.split())
-            logging.debug(response["Body"].read())
+            logging.debug(response_string)
         except Exception as e:
             request_meta["exception"] = e
 
