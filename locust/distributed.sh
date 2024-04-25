@@ -2,7 +2,7 @@
 #replace with your endpoint name in format <<endpoint-name>>
 export ENDPOINT_NAME=$1
 export CONTENT_TYPE=application/json
-export RUN_TIME=1mg
+export RUN_TIME=10m
 export USE_CASE=$2
 
 if [ -z "$PAYLOAD_FILE" ]; then
@@ -53,11 +53,11 @@ export HTML_RESULT_FILE=results/${USE_CASE}_"$TIMESTAMP".html
 if $LOCUST_UI ; then
     locust -f $SCRIPT -H $ENDPOINT_NAME --master --expect-workers $WORKERS -u $USERS -t $RUN_TIME \
     --loglevel INFO --logfile ${LOG_FILE} \
-    --csv ${RESULT_FILE} --html ${HTML_RESULT_FILE} >> $STD_OUT &
+    --csv ${RESULT_FILE} --html ${HTML_RESULT_FILE}  &
 else
     locust -f $SCRIPT -H $ENDPOINT_NAME --master --expect-workers $WORKERS -u $USERS -t $RUN_TIME \
     --loglevel INFO --logfile ${LOG_FILE} \
-    --csv ${RESULT_FILE} --headless --html ${HTML_RESULT_FILE} >> $STD_OUT &
+    --csv ${RESULT_FILE} --headless --html ${HTML_RESULT_FILE}  &
 fi
 
 for (( c=1; c<=$WORKERS; c++ ))
