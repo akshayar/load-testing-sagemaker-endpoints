@@ -19,11 +19,11 @@ if [ -z "$REGION" ]; then
     echo "REGION was empty, setting it to $REGION"
 fi
 if [ -z "$USERS" ]; then
-    export USERS=240
+    export USERS=10
     echo "USERS was empty, setting it to $USERS"
 fi
 if [ -z "$WORKERS" ]; then
-    export WORKERS=60
+    export WORKERS=10
     echo "WORKERS was empty, setting it to $WORKERS"
 fi
 if [ -z "$LOCUST_UI" ]; then
