@@ -29,8 +29,11 @@ class BotoClient:
         with open(payload_file, "r") as f:
             self.sampPayloads = f.read().splitlines()
         self.payload = json.dumps({"inputs": random.choice(self.sampPayloads), "parameters": {"max_new_tokens": self.max_new_tokens}})
+        log_file = os.environ["LOG_FILE"]
+        logging.basicConfig(filename=log_file)
 
-    def send(self):
+
+def send(self):
 
         request_meta = {
             "request_type": "InvokeEndpoint",
