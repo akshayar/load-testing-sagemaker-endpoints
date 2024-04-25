@@ -88,7 +88,7 @@ class BotoClient:
                 ContentType=self.content_type,
             )
             for token in TokenIterator(response["Body"]):
-                print(token)
+                logging.info(token)
         except Exception as e:
             request_meta["exception"] = e
 
