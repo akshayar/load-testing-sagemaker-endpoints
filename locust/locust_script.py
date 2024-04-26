@@ -29,6 +29,9 @@ class BotoClient:
         with open(payload_file, "r") as f:
             self.sampPayloads = f.read().splitlines()
         self.payload = json.dumps({"inputs": random.choice(self.sampPayloads), "parameters": {"max_new_tokens": self.max_new_tokens}})
+        # Log the details above
+        logging.debug("endpoint_name=%s, content_type=%s, payload=%s",
+                     self.endpoint_name, self.content_type, self.payload)
 
     def send(self):
         request_meta = {
