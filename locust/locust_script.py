@@ -15,6 +15,9 @@ content_type = os.environ["CONTENT_TYPE"]
 payload_file = os.environ["PAYLOAD_FILE"]
 max_new_tokens = os.environ["MAX_NEW_TOKENS"]
 
+# Set root logging
+logging.basicConfig(level=logging.INFO, filename="py_log.log")
+
 
 class BotoClient:
     def __init__(self, host):
