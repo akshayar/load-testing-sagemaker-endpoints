@@ -16,7 +16,7 @@ fi
 export PROPERTIES_FILE=$(default_if_empty config.sh $2)
 source "${PROPERTIES_FILE}"
 
-export USE_CASE=$(default_if_empty test "$USE_CASE")
+export USE_CASE=$(default_if_empty test "$3")
 export CONTENT_TYPE=$(default_if_empty application/json "${CONTENT_TYPE}")
 export RUN_TIME=$(default_if_empty 10m "${RUN_TIME}")
 export PAYLOAD_FILE=$(default_if_empty test.txt "${PAYLOAD_FILE}")
