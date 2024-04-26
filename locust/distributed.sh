@@ -62,12 +62,12 @@ echo "SCRIPT: $SCRIPT"
 # if LOCUST_UI is false, then run the locust script in headless mode
 if $LOCUST_UI ; then
     locust -f $SCRIPT -H $ENDPOINT_NAME --master --expect-workers $WORKERS -u $USERS -t $RUN_TIME \
-    --loglevel INFO --logfile ${LOG_FILE} \
-    --csv ${RESULT_FILE} --html ${HTML_RESULT_FILE}  &
+    --skip-log-setup \
+    --csv ${RESULT_FILE} --html ${HTML_RESULT_FILE} > tee $STD_OUT &
 else
     locust -f $SCRIPT -H $ENDPOINT_NAME --master --expect-workers $WORKERS -u $USERS -t $RUN_TIME \
-    --loglevel INFO --logfile ${LOG_FILE} \
-    --csv ${RESULT_FILE} --headless --html ${HTML_RESULT_FILE}  &
+    --skip-log-setup \
+    --csv ${RESULT_FILE} --headless --html ${HTML_RESULT_FILE} > tee $STD_OUT &
 fi
 
 for (( c=1; c<=$WORKERS; c++ ))

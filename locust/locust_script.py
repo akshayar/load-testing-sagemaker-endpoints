@@ -3,6 +3,7 @@ import logging
 import os
 import time
 import random
+import sys
 
 import boto3
 from botocore.config import Config
@@ -13,6 +14,13 @@ region = os.environ["REGION"]
 content_type = os.environ["CONTENT_TYPE"]
 payload_file = os.environ["PAYLOAD_FILE"]
 max_new_tokens = os.environ["MAX_NEW_TOKENS"]
+
+# Set root logging
+logging.getLogger().setLevel('INFO')
+
+# Add stdout to locust logging
+logger = logging.getLogger('locust')
+logger.addHandler(logging.StreamHandler(sys.stdout))
 
 
 class BotoClient:

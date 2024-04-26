@@ -6,6 +6,7 @@ import random
 import io
 import json
 import time
+import sys
 
 
 import boto3
@@ -17,6 +18,14 @@ region = os.environ["REGION"]
 content_type = os.environ["CONTENT_TYPE"]
 payload_file = os.environ["PAYLOAD_FILE"]
 max_new_tokens = os.environ["MAX_NEW_TOKENS"]
+
+# Set root logging
+logging.getLogger().setLevel('INFO')
+
+# Add stdout to locust logging
+logger = logging.getLogger('locust')
+logger.addHandler(logging.StreamHandler(sys.stdout))
+
 class BotoClient:
     def __init__(self, host):
         # Consider removing retry logic to get accurate picture of failure in locust
