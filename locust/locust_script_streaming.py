@@ -58,15 +58,14 @@ class BotoClient:
                 ContentType=self.content_type,
             )
             self.get_first_string(response)
+            response_time_ms=(time.perf_counter() - start_perf_counter)*1000
+            request_meta["response_time"] = response_time_ms
+            logging.info("response_time_ms=%s", str(response_time_ms))
+            events.request.fire(**request_meta)
         except Exception as e:
             logging.error(e)
             request_meta["exception"] = e
 
-        response_time_ms=(time.perf_counter() - start_perf_counter)*1000
-        request_meta["response_time"] = response_time_ms
-        logging.info("response_time_ms=%s", str(response_time_ms))
-
-        events.request.fire(**request_meta)
     def get_next_string(self,iterator):
         try:
             return next(iterator)["PayloadPart"]["Bytes"].decode('utf-8').strip()
