@@ -3,6 +3,8 @@ import logging
 import os
 import time
 import random
+import gevent.monkey
+gevent.monkey.patch_all()
 
 import boto3
 from botocore.config import Config
@@ -22,17 +24,16 @@ class BotoClient:
         config = Config(
             region_name=region, retries={"max_attempts": 0, "mode": "standard"}
         )
-        self.sagemaker_client = boto3.client("sagemaker-runtime", config=config)
-        self.endpoint_name = host.split("/")[-1]
+        self.bedrock_client = boto3.client("bedrock-runtime", config=config)
+        self.model_id = host.split("/")[-1]
         self.content_type = content_type
         self.max_new_tokens = int(max_new_tokens)
         self.prompt = random.choice(sampPayloads)
-        self.payload = json.dumps({"inputs": random.choice(self.sampPayloads),
-                                   "parameters": {"max_new_tokens": self.max_new_tokens}}
-                                  )
-        # Log the details above
-        logging.debug("endpoint_name=%s, content_type=%s, payload=%s",
-                     self.endpoint_name, self.content_type, self.payload)
+        self.payload = json.dumps({"prompt": self.prompt,
+                                   "max_gen_len": self.max_new_tokens
+                                   })
+        logging.debug("model_id=%s, content_type=%s, payload=%s",
+                     self.model_id, self.content_type, self.payload)
 
     def send(self):
         request_meta = {
@@ -49,17 +50,17 @@ class BotoClient:
 
         try:
             logging.debug("Payload:%s",self.payload)
-            response = self.sagemaker_client.invoke_endpoint(
-                EndpointName=self.endpoint_name,
-                Body=self.payload,
-                ContentType=self.content_type,
+            response = self.bedrock_client.invoke_model(
+                body=self.payload,
+                modelId=self.model_id,
+                accept=self.content_type,
+                contentType=self.content_type,
             )
-
-            response_string=response["Body"].read().decode("utf8")
-            logging.debug("Response Body:%s",response_string)
-            generated_string=json.loads(response_string)["generated_text"]
+            response_body = json.loads(response.get('body').read())
+            logging.debug("Response Body:%s",response_body)
+            generated_string = response_body.get('generation')
             string_len=len(generated_string.split())
-            logging.debug("Generated String:%s",response_string)
+            logging.info("Prompt: %s | Generated String:%s",self.prompt,generated_string)
         except Exception as e:
             logging.error(e)
             request_meta["exception"] = e
@@ -85,3 +86,22 @@ class MyUser(BotoUser):
     @task
     def send_request(self):
         self.client.send()
+
+##Write main program to test BotoClient
+if __name__ == "__main__":
+    ##Set environment HOST to the endpoint name
+    #os.environ["HOST"] = "meta.llama2-13b-chat-v1"
+    #os.environ["REGION"] = "us-east-1"
+    #os.environ["CONTENT_TYPE"] = "application/json"
+    #os.environ["PAYLOAD_FILE"] = "test.txt"
+    #os.environ["MAX_NEW_TOKENS"] = "500"
+    logging.basicConfig(level=logging.INFO)
+    logging.info("Starting locust script")
+    logging.info("HOST=%s", os.environ["HOST"])
+    logging.info("REGION=%s", os.environ["REGION"])
+    logging.info("CONTENT_TYPE=%s", os.environ["CONTENT_TYPE"])
+    logging.info("PAYLOAD_FILE=%s", os.environ["PAYLOAD_FILE"])
+    logging.info("MAX_NEW_TOKENS=%s", os.environ["MAX_NEW_TOKENS"])
+    client = BotoClient(os.environ["HOST"])
+    client.send()
+
