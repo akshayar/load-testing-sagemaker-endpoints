@@ -3,3 +3,6 @@
 echo   "Killing locust processes"
 ps aux | grep locust | grep -v grep | awk '{print $2}' | xargs kill -9
 echo "Done"
+exit 0
+
+
