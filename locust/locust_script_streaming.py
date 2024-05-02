@@ -94,7 +94,14 @@ class BotoClient:
         chunk = self.get_next_string(iterator)
         i=0
         while True:
-            chunk = self.get_next_string(iterator)
+            try:
+                chunk = self.get_next_string(iterator)
+                logging.debug("Iterating response no %s : %s", str(i), chunk)
+                if chunk and chunk != '\n' and len(chunk) !=0:
+                    logging.info("Next token: %s", chunk)
+                i+=1
+            except StopIteration:
+                print("done")
 
 
 class BotoUser(FastHttpUser):
