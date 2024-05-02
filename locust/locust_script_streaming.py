@@ -66,6 +66,7 @@ class BotoClient:
             events.request.fire(**request_meta)
             self.drain_stream(response)
         except Exception as e:
+            traceback.print_exc()
             logging.error(e)
             request_meta["exception"] = e
 
