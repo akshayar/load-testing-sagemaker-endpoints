@@ -85,7 +85,7 @@ class BotoClient:
             while True:
                 chunk = self.get_next_string(iterator)
                 logging.debug("Iterating response no %s : %s",str(i),chunk)
-                if len(chunk) !=0:
+                if chunk & chunk != '\n' & len(chunk) !=0:
                     logging.info("First token: %s",chunk)
                     return chunk
                 i+=1
@@ -100,9 +100,6 @@ class BotoClient:
             while True:
                 chunk = self.get_next_string(iterator)
                 logging.debug("Iterating response no %s : %s",str(i),chunk)
-                if len(chunk) !=0:
-                    logging.debug("token #%s: %s",str(i),chunk)
-                i+=1
         except StopIteration:
             print("done")
 
