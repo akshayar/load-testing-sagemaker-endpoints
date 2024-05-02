@@ -3,6 +3,8 @@ import logging
 import os
 import time
 import random
+import gevent.monkey
+gevent.monkey.patch_all()
 
 import boto3
 from botocore.config import Config
