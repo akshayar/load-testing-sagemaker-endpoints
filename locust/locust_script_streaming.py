@@ -72,10 +72,7 @@ class BotoClient:
             request_meta["exception"] = e
 
     def get_next_string(self,iterator):
-        try:
-            return next(iterator)["PayloadPart"]["Bytes"].decode('utf-8').strip()
-        except StopIteration:
-            print("done")
+        return next(iterator)["PayloadPart"]["Bytes"].decode('utf-8').strip()
 
     def get_first_string(self,response):
         try:
