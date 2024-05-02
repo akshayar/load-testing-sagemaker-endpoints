@@ -100,3 +100,21 @@ class MyUser(BotoUser):
     @task
     def send_request(self):
         self.client.send()
+
+##Write main program to test BotoClient
+if __name__ == "__main__":
+    ##Set environment HOST to the endpoint name
+    #os.environ["HOST"] = "meta.llama2-13b-chat-v1"
+    #os.environ["REGION"] = "us-east-1"
+    #os.environ["CONTENT_TYPE"] = "application/json"
+    #os.environ["PAYLOAD_FILE"] = "test.txt"
+    #os.environ["MAX_NEW_TOKENS"] = "500"
+    logging.basicConfig(level=logging.INFO)
+    logging.info("Starting locust script")
+    logging.info("HOST=%s", os.environ["HOST"])
+    logging.info("REGION=%s", os.environ["REGION"])
+    logging.info("CONTENT_TYPE=%s", os.environ["CONTENT_TYPE"])
+    logging.info("PAYLOAD_FILE=%s", os.environ["PAYLOAD_FILE"])
+    logging.info("MAX_NEW_TOKENS=%s", os.environ["MAX_NEW_TOKENS"])
+    client = BotoClient(os.environ["HOST"])
+    client.send()
