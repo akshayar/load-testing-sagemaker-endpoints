@@ -90,13 +90,13 @@ class BotoClient:
             print("done")
 
     def drain_stream(self,response):
+        logging.info("Draining response stream")
         iterator = iter(response["Body"])
         chunk = self.get_next_string(iterator)
         i=0
         while True:
             try:
                 chunk = self.get_next_string(iterator)
-                logging.info("Iterating response no %s : %s", str(i), chunk)
             except StopIteration:
                 print("done")
                 return
