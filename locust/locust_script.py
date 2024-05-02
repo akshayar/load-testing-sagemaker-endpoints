@@ -61,7 +61,7 @@ class BotoClient:
             logging.debug("Response Body:%s",response_string)
             generated_string=json.loads(response_string)["generated_text"]
             string_len=len(generated_string.split())
-            logging.debug("Generated String:%s",response_string)
+            logging.info("Prompt: %s | Generated String:%s",self.prompt,response_string)
         except Exception as e:
             logging.error(e)
             request_meta["exception"] = e
