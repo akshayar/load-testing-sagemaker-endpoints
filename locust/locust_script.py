@@ -29,7 +29,7 @@ class BotoClient:
         self.content_type = content_type
         self.max_new_tokens = int(max_new_tokens)
         self.prompt = random.choice(sampPayloads)
-        self.payload = json.dumps({"inputs": random.choice(self.sampPayloads),
+        self.payload = json.dumps({"inputs": self.prompt,
                                    "parameters": {"max_new_tokens": self.max_new_tokens}}
                                   )
         # Log the details above
