@@ -98,7 +98,7 @@ class BotoClient:
             try:
                 chunk = self.get_next_string(iterator)
             except StopIteration:
-                print("done")
+                logging.info("done")
                 return
 
 
