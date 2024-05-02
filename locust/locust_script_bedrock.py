@@ -63,6 +63,7 @@ class BotoClient:
             string_len=len(generated_string.split())
             logging.info("Prompt: %s | Generated String:%s",self.prompt,generated_string)
         except Exception as e:
+            traceback.print_exc()
             logging.error(e)
             request_meta["exception"] = e
 
