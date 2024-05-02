@@ -106,6 +106,7 @@ class BotoClient:
                         i+=1
         except StopIteration:
             print("done")
+            return
 
 
 class BotoUser(FastHttpUser):

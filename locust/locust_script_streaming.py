@@ -102,6 +102,7 @@ class BotoClient:
                 logging.debug("Iterating response no %s : %s",str(i),chunk)
         except StopIteration:
             print("done")
+            return
 
 
 class BotoUser(FastHttpUser):
