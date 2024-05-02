@@ -60,7 +60,7 @@ class BotoClient:
 
             response_string=response["Body"].read().decode("utf8")
             logging.debug("Response Body:%s",response_string)
-            generated_string=json.loads(response_string)["generated_text"]
+            generated_string=json.loads(response_string)[0]["generated_text"]
             string_len=len(generated_string.split())
             logging.info("Prompt: %s | Generated String:%s",self.prompt,response_string)
         except Exception as e:
