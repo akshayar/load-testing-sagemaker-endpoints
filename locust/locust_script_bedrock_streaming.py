@@ -64,7 +64,9 @@ class BotoClient:
             request_meta["response_time"] = response_time_ms
             logging.info("response_time_ms=%s", str(response_time_ms))
             events.request.fire(**request_meta)
+            self.drain_stream(response)
         except Exception as e:
+            traceback.print_exc()
             logging.error(e)
             request_meta["exception"] = e
 
@@ -84,6 +86,24 @@ class BotoClient:
                         if len(text) !=0:
                             logging.info("First token: %s",text)
                             return text
+                        i+=1
+        except StopIteration:
+            print("done")
+
+    def drain_stream(self,response):
+        try:
+            stream = response.get('body')
+            logging.debug("Stream response:%s",stream)
+            i = 1
+            if stream:
+                for event in stream:
+                    chunk = event.get('chunk')
+                    if chunk:
+                        chunk_obj = json.loads(chunk.get('bytes').decode())
+                        logging.debug("Iterating response no %s : %s",str(i),chunk)
+                        text = chunk_obj['generation'].strip()
+                        if len(text) !=0:
+                            logging.debug("token no %s: %s",str(i),text)
                         i+=1
         except StopIteration:
             print("done")
