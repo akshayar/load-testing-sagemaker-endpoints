@@ -87,7 +87,7 @@ class BotoClient:
                     return chunk
                 i+=1
         except StopIteration:
-            print("done")
+            logging.info("done")
 
     def drain_stream(self,response):
         logging.info("Draining response stream")
