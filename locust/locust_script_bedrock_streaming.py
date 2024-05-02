@@ -84,7 +84,7 @@ class BotoClient:
                         chunk_obj = json.loads(chunk.get('bytes').decode())
                         logging.debug("Iterating response no %s : %s",str(i),chunk)
                         text = chunk_obj['generation'].strip()
-                        if len(text) !=0:
+                        if text and text != '\n' and len(text) !=0:
                             logging.info("First token: %s",text)
                             return text
                         i+=1
@@ -103,8 +103,6 @@ class BotoClient:
                         chunk_obj = json.loads(chunk.get('bytes').decode())
                         logging.debug("Iterating response no %s : %s",str(i),chunk)
                         text = chunk_obj['generation'].strip()
-                        if len(text) !=0:
-                            logging.debug("token no %s: %s",str(i),text)
                         i+=1
         except StopIteration:
             print("done")
