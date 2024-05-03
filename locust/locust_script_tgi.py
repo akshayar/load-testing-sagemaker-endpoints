@@ -60,7 +60,7 @@ class BotoUser(FastHttpUser):
 
     def __init__(self, env):
         super().__init__(env)
-        self.client = BotoClient(self.host)
+        self.client = HuggingFaceTGIClient(self.host)
 
 
 class MyUser(BotoUser):
