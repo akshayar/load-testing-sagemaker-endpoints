@@ -95,7 +95,7 @@ if __name__ == "__main__":
     #os.environ["HOST"] = "meta.llama2-13b-chat-v1"
     #os.environ["REGION"] = "us-east-1"
     #os.environ["CONTENT_TYPE"] = "application/json"
-    #os.environ["PAYLOAD_FILE"] = "test.txt"
+    #os.environ["PAYLOAD_FILE"] = "chat.txt"
     #os.environ["MAX_NEW_TOKENS"] = "500"
     logging.basicConfig(level=logging.INFO)
     logging.info("Starting locust script")
