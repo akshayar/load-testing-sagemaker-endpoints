@@ -6,5 +6,5 @@ export WORKERS=10
 export LOCUST_UI=false
 export MAX_NEW_TOKENS=256
 export SCRIPT=locust_script_bedrock.py
-export PAYLOAD_FILE=test.txt
+export PAYLOAD_FILE=instruct.txt
 export USE_CASE=test
