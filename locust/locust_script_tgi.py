@@ -40,14 +40,15 @@ class HuggingFaceTGIClient:
             generated_string = token.generated_text
             generated_tokens = token.details['generated_tokens']
             response_time_ms = (time.perf_counter() - start_perf_counter) * 1000
-            string_len = len(generated_string)
+            request_meta["response_time"] = response_time_ms
+            string_len = len(generated_string.split())
             if string_len == 0:
                 string_len = 1
             logging.info("Prompt: %s | Generated String:%s", self.prompt, generated_string)
             time_per_word = response_time_ms / string_len
             time_per_token = response_time_ms / generated_tokens
-            logging.info("response_time_ms=%s,time_per_word=%s, time_per_token=%s, string_len=%s",
-                         str(response_time_ms), str(time_per_word), str(time_per_token), str(string_len))
+            logging.info("response_time_ms=%s,time_per_word=%s, time_per_token=%s, string_len=%s, generated_tokens=%s ",
+                         str(response_time_ms), str(time_per_word), str(time_per_token), str(string_len),str(generated_tokens))
             events.request.fire(**request_meta)
         except Exception as e:
             traceback.print_exc()
