@@ -74,6 +74,7 @@ class BotoClient:
         logging.info("response_time_ms=%s,time_per_word=%s, time_per_token=%s, string_len=%s",
                      str(response_time_ms), str(time_per_word), str(time_per_token), str(string_len))
         if string_len <= 1:
+            request_meta["response_time"] = None
             request_meta["exception"] = 'Zero length output'
         events.request.fire(**request_meta)
 
