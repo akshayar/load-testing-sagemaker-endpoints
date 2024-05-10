@@ -14,7 +14,7 @@ do
     export USERS=$user
     export WORKERS=$user
     export RUN_TIME=5m
-    ./distributed.sh $ENDPOINT_NAME "$2" "$user-llama3" ; sleep 6m ;
+    ./distributed.sh $ENDPOINT_NAME "$2" "$user-lb-llama3" ; sleep 6m ;
 done
 
 
