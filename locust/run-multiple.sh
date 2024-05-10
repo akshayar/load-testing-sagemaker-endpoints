@@ -13,7 +13,7 @@ do
     echo "Running $user"
     export USERS=$user
     export WORKERS=$user
-    ./distributed.sh $ENDPOINT_NAME common.sh "$user-llama3"
+    ./distributed.sh $ENDPOINT_NAME "$2" "$user-llama3"
 done
 
 
