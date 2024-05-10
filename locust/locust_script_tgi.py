@@ -45,6 +45,7 @@ class HuggingFaceTGIClient:
                 generated_tokens = int(max_new_tokens)
 
             response_time_ms = (time.perf_counter() - start_perf_counter) * 1000
+            request_meta["response_time"] = response_time_ms
             string_len = len(generated_string)
             if string_len == 0:
                 string_len = 1
