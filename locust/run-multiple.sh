@@ -19,9 +19,9 @@ done
 
 
 
-./distributed.sh http://ip-172-31-23-118.ec2.internal:8080 config-tgi-1u.sh 1user-llama3-8b ; sleep 6m ;./distributed.sh http://ip-172-31-23-118.ec2.internal:8080 config-tgi-5u.sh 5user-llama3-8b ; sleep 6m ;
-./distributed.sh http://ip-172-31-23-118.ec2.internal:8080 config-tgi-10u.sh 10u-llama3-8b ; sleep 6m ;./distributed.sh http://ip-172-31-23-118.ec2.internal:8080 config-tgi-15u.sh 15u-llama3-8b ; sleep 6m ;
-./distributed.sh http://ip-172-31-23-118.ec2.internal:8080 config-tgi-20u.sh 20u-llama3-8b ; sleep 6m ;./distributed.sh http://ip-172-31-23-118.ec2.internal:8080 config-tgi-25u.sh 25-llama3-8b ; sleep 6m ;
-./distributed.sh http://ip-172-31-23-118.ec2.internal:8080 config-tgi-30u.sh 30-llama3-8b ; sleep 6m ;./distributed.sh http://ip-172-31-23-118.ec2.internal:8080 config-tgi-35u.sh 35-llama3-8b ; sleep 6m ;
-./distributed.sh http://ip-172-31-23-118.ec2.internal:8080 config-tgi-40u.sh 40-llama3-8b ; sleep 6m ;./distributed.sh http://ip-172-31-23-118.ec2.internal:8080 config-tgi-45u.sh 45-llama3-8b ; sleep 6m ;
-./distributed.sh http://ip-172-31-23-118.ec2.internal:8080 config-tgi-50u.sh 50-llama3-8b ; sleep 6m ;
+#./distributed.sh http://ip-172-31-23-118.ec2.internal:8080 config-tgi-1u.sh 1user-llama3-8b ; sleep 6m ;./distributed.sh http://ip-172-31-23-118.ec2.internal:8080 config-tgi-5u.sh 5user-llama3-8b ; sleep 6m ;
+#./distributed.sh http://ip-172-31-23-118.ec2.internal:8080 config-tgi-10u.sh 10u-llama3-8b ; sleep 6m ;./distributed.sh http://ip-172-31-23-118.ec2.internal:8080 config-tgi-15u.sh 15u-llama3-8b ; sleep 6m ;
+#./distributed.sh http://ip-172-31-23-118.ec2.internal:8080 config-tgi-20u.sh 20u-llama3-8b ; sleep 6m ;./distributed.sh http://ip-172-31-23-118.ec2.internal:8080 config-tgi-25u.sh 25-llama3-8b ; sleep 6m ;
+#./distributed.sh http://ip-172-31-23-118.ec2.internal:8080 config-tgi-30u.sh 30-llama3-8b ; sleep 6m ;./distributed.sh http://ip-172-31-23-118.ec2.internal:8080 config-tgi-35u.sh 35-llama3-8b ; sleep 6m ;
+#./distributed.sh http://ip-172-31-23-118.ec2.internal:8080 config-tgi-40u.sh 40-llama3-8b ; sleep 6m ;./distributed.sh http://ip-172-31-23-118.ec2.internal:8080 config-tgi-45u.sh 45-llama3-8b ; sleep 6m ;
+#./distributed.sh http://ip-172-31-23-118.ec2.internal:8080 config-tgi-50u.sh 50-llama3-8b ; sleep 6m ;
