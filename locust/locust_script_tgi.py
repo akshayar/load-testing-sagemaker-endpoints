@@ -25,8 +25,8 @@ class HuggingFaceTGIClient:
 
     def send(self):
         request_meta = {
-            "request_type": "InvokeEndpoint",
-            "name": "SageMaker",
+            "request_type": "generate-token",
+            "name": "HuggingFaceTGIClient",
             "start_time": time.time(),
             "response_length": 0,
             "response": None,
@@ -37,6 +37,7 @@ class HuggingFaceTGIClient:
             logging.debug("Prompt:%s", self.prompt)
             start_perf_counter = time.perf_counter()
             token = self.tgi_client.text_generation(prompt=self.prompt, max_new_tokens=self.max_new_tokens,details=True)
+            logging.debug("token:%s", token)
             generated_string = token.generated_text
             generated_tokens = token.details['generated_tokens']
             response_time_ms = (time.perf_counter() - start_perf_counter) * 1000
