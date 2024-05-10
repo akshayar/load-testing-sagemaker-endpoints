@@ -39,7 +39,11 @@ class HuggingFaceTGIClient:
             token = self.tgi_client.text_generation(prompt=self.prompt, max_new_tokens=self.max_new_tokens,details=True)
             logging.debug("token:%s", token)
             generated_string = token.generated_text
-            generated_tokens = token.details['generated_tokens']
+            if token.details:
+                generated_tokens = token.details['generated_tokens']
+            else:
+                generated_tokens = int(max_new_tokens)
+
             response_time_ms = (time.perf_counter() - start_perf_counter) * 1000
             string_len = len(generated_string)
             if string_len == 0:
