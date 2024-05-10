@@ -13,8 +13,12 @@ if  [ -z "$ENDPOINT_NAME" ]; then
     echo "Usage ./distributed.sh <<endpoint-name>> [config.sh]"
     exit 1
 fi
-export PROPERTIES_FILE=$(default_if_empty config.sh $2)
-source "${PROPERTIES_FILE}"
+if  [ -z "$2" ]; then
+  echo "Config file not provided"
+else
+  export PROPERTIES_FILE=$2
+  source "${PROPERTIES_FILE}"
+fi
 
 export USE_CASE=$(default_if_empty test "$3")
 export CONTENT_TYPE=$(default_if_empty application/json "${CONTENT_TYPE}")
