@@ -1,5 +1,4 @@
 export CONTENT_TYPE=application/json
-export RUN_TIME=5m
 export REGION=us-east-1
 export LOCUST_UI=false
 export MAX_NEW_TOKENS=512

@@ -13,7 +13,8 @@ do
     echo "Running $user"
     export USERS=$user
     export WORKERS=$user
-    ./distributed.sh $ENDPOINT_NAME "$2" "$user-llama3"
+    export RUN_TIME=5m
+    ./distributed.sh $ENDPOINT_NAME "$2" "$user-llama3" ; sleep 6m ;
 done
 
 
