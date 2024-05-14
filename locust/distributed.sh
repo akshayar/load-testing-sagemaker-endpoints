@@ -10,7 +10,7 @@ function default_if_empty() {
 export ENDPOINT_NAME=$1
 if  [ -z "$ENDPOINT_NAME" ]; then
     echo "Endpoint name not provided"
-    echo "Usage ./distributed.sh <<endpoint-name>> [config.sh]"
+    echo "Usage ./distributed.sh <<endpoint-name>> [config.sh] [use case label]"
     exit 1
 fi
 if  [ -z "$2" ]; then

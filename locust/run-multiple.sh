@@ -1,12 +1,30 @@
 #!/bin/bash
-export ENDPOINT_NAME=$1
-if  [ -z "$ENDPOINT_NAME" ]; then
-    echo "Endpoint name not provided"
+function print_help {
     echo "Usage ./run-multiple.sh <<endpoint-name>> <<config.sh>> <<users>>"
+    echo "Example ./run-multiple.sh http://ip-172-31-23-118.ec2.internal:8080 config-tgi-1u.sh 1"
+}
+function default_if_empty() {
+    if [ -z "$2" ]; then
+      echo "$1"
+    else
+      echo "$2"
+    fi
+}
+export ENDPOINT_NAME=$1
+PROPERTY_FILE=$2
+users=$3
+use_case_label=$4
+## Check if input is empty. If empty print help
+if [ -z "$ENDPOINT_NAME" ] || [ -z "$PROPERTY_FILE" ] || [ -z "$users" ]; then
+    echo "Missing arguments"
+    echo "ENDPOINT_NAME=$ENDPOINT_NAME , PROPERTY_FILE=$PROPERTY_FILE , USERS=$USERS"
+    print_help
     exit 1
 fi
-source "$2"
-users=$3
+
+source "$PROPERTY_FILE"
+use_case_label=$(default_if_empty "-lb-llama3" "$use_case_label")
+
 ## Iterate over users which is a comma separated list of numbers
 for user in ${users//,/ }
 do
@@ -14,7 +32,7 @@ do
     export USERS=$user
     export WORKERS=$user
     export RUN_TIME=5m
-    ./distributed.sh $ENDPOINT_NAME "$2" "$user-lb-llama3" ; sleep 6m ;
+    ./distributed.sh $ENDPOINT_NAME "$2" "$user-$use_case_label" ; sleep 6m ;
 done
 
 
@@ -25,4 +43,5 @@ done
 #./distributed.sh http://ip-172-31-23-118.ec2.internal:8080 config-tgi-20u.sh 20u-llama3-8b ; sleep 6m ;./distributed.sh http://ip-172-31-23-118.ec2.internal:8080 config-tgi-25u.sh 25-llama3-8b ; sleep 6m ;
 #./distributed.sh http://ip-172-31-23-118.ec2.internal:8080 config-tgi-30u.sh 30-llama3-8b ; sleep 6m ;./distributed.sh http://ip-172-31-23-118.ec2.internal:8080 config-tgi-35u.sh 35-llama3-8b ; sleep 6m ;
 #./distributed.sh http://ip-172-31-23-118.ec2.internal:8080 config-tgi-40u.sh 40-llama3-8b ; sleep 6m ;./distributed.sh http://ip-172-31-23-118.ec2.internal:8080 config-tgi-45u.sh 45-llama3-8b ; sleep 6m ;
-#./distributed.sh http://ip-172-31-23-118.ec2.internal:8080 config-tgi-50u.sh 50-llama3-8b ; sleep 6m ;
+
+}#./distributed.sh http://ip-172-31-23-118.ec2.internal:8080 config-tgi-50u.sh 50-llama3-8b ; sleep 6m ;
