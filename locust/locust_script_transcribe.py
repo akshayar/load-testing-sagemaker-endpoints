@@ -1,4 +1,5 @@
 from locust import HttpUser, run_single_user, task
+import logging
 
 
 class QuickstartUser(HttpUser):
@@ -12,7 +13,7 @@ class QuickstartUser(HttpUser):
             "response_format": 'json'
         }
         with self.client.post("/inference", files=fileIn) as response:
-            print(response.text)
+            logging.info("response: %s | status_code:%s",str(response.text),str(response.status_code))
 
 # if launched directly, e.g. "python3 debugging.py", not "locust -f debugging.py"
 if __name__ == "__main__":
