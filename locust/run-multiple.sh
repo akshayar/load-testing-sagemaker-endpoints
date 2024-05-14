@@ -33,7 +33,7 @@ do
     export USERS=$user
     export WORKERS=$user
     export RUN_TIME=5m
-    ./distributed.sh $ENDPOINT_NAME "$2" "$user-$use_case_label" ; sleep $sleep_duration ;
+    ./distributed.sh $ENDPOINT_NAME "$2" "$user"_"$use_case_label" ; sleep $sleep_duration ;
 done
 
 
