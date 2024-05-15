@@ -48,19 +48,20 @@ class BotoClient:
         try:
             response = self.sagemaker_client.invoke_endpoint(
                 EndpointName=self.endpoint_name,
-                Body=payload
+                Body=payload,
+                ContentType="audio/wav"
             )
             response_string = json.loads(response['Body'].read().decode())
             logging.debug("Response Body:%s", response_string)
             logging.info("Generated String:%s", response_string)
+            response_time_ms = (time.perf_counter() - start_perf_counter) * 1000
+            request_meta["response_time"] = response_time_ms
+            logging.info("response_time_ms=%s", str(response_time_ms))
         except Exception as e:
             traceback.print_exc()
             logging.error(e)
             request_meta["exception"] = e
 
-        response_time_ms = (time.perf_counter() - start_perf_counter) * 1000
-        request_meta["response_time"] = response_time_ms
-        logging.info("response_time_ms=%s", str(response_time_ms))
         events.request.fire(**request_meta)
 
 
@@ -79,7 +80,7 @@ class MyUser(BotoUser):
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
     logging.info("Starting locust script")
     logging.info("HOST=%s", os.environ["HOST"])
     logging.info("REGION=%s", os.environ["REGION"])

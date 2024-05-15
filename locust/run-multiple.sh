@@ -15,7 +15,7 @@ PROPERTY_FILE=$2
 users=$3
 sleep_duration=$4
 use_case_label=$5
-
+use_case_label=$(default_if_empty "-lb-llama3" "$use_case_label")
 ## Check if input is empty. If empty print help
 if [ -z "$ENDPOINT_NAME" ] || [ -z "$PROPERTY_FILE" ] || [ -z "$users" ]; then
     echo "Missing arguments"
@@ -25,7 +25,6 @@ if [ -z "$ENDPOINT_NAME" ] || [ -z "$PROPERTY_FILE" ] || [ -z "$users" ]; then
 fi
 
 source "$PROPERTY_FILE"
-use_case_label=$(default_if_empty "-lb-llama3" "$use_case_label")
 
 ## Iterate over users which is a comma separated list of numbers
 for user in ${users//,/ }
@@ -36,8 +35,8 @@ do
     export RUN_TIME=5m
     echo "Executing ./distributed.sh $ENDPOINT_NAME "$2" "$user"_"$use_case_label" "
     ./distributed.sh $ENDPOINT_NAME "$2" "$user"_"$use_case_label" ;
-    echo "Sleeping for $sleep_duration"
-    sleep $sleep_duration ;
+    wait
+    sleep 1m ;
 done
 
 
