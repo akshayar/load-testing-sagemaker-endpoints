@@ -1,7 +1,7 @@
 #!/bin/bash
 function print_help {
-    echo "Usage ./run-multiple.sh <<endpoint-name>> <<config.sh>> <<users>> <sleep-duration>"
-    echo "Example ./run-multiple.sh http://ip-172-31-23-118.ec2.internal:8080 config-tgi-1u.sh 1"
+    echo "Usage ./run-multiple.sh <<endpoint-name>> <<config.sh>> <<users>> <<sleep-duration>> <usecase-label>"
+    echo "Example ./run-multiple.sh http://ip-172-31-23-118.ec2.internal:8080 config-tgi-1u.sh 1,2 1m testing"
 }
 function default_if_empty() {
     if [ -z "$2" ]; then
@@ -13,8 +13,9 @@ function default_if_empty() {
 export ENDPOINT_NAME=$1
 PROPERTY_FILE=$2
 users=$3
-use_case_label=$4
-sleep_duration=$5
+sleep_duration=$4
+use_case_label=$5
+
 ## Check if input is empty. If empty print help
 if [ -z "$ENDPOINT_NAME" ] || [ -z "$PROPERTY_FILE" ] || [ -z "$users" ]; then
     echo "Missing arguments"
