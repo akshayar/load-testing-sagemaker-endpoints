@@ -35,8 +35,13 @@ do
     export RUN_TIME=5m
     echo "Executing ./distributed.sh $ENDPOINT_NAME "$2" "$user"_"$use_case_label" "
     ./distributed.sh $ENDPOINT_NAME "$2" "$user"_"$use_case_label" ;
-    wait $(pgrep locust)
-    sleep 1m ;
+    echo "Sleeping for $sleep_duration"
+    sleep "$sleep_duration" ;
+    # Check the status of last command and exit if it failed
+    if [ $? -ne 0 ]; then
+        echo "Last command failed. Exiting"
+        exit 1
+    fi
 done
 
 
