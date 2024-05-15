@@ -1,5 +1,6 @@
 export CONTENT_TYPE=application/json
-export RUN_TIME=1m
+export RUN_TIME=2m
+export RUN_TIME=2m
 export REGION=us-east-1
 export LOCUST_UI=false
 export PAYLOAD_FILE=samples_jfk.wav
