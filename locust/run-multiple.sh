@@ -35,7 +35,7 @@ do
     export RUN_TIME=5m
     echo "Executing ./distributed.sh $ENDPOINT_NAME "$2" "$user"_"$use_case_label" "
     ./distributed.sh $ENDPOINT_NAME "$2" "$user"_"$use_case_label" ;
-    wait
+    wait $(pgrep locust)
     sleep 1m ;
 done
 
