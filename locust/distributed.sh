@@ -38,10 +38,10 @@ export TIMESTAMP=$(date +%d%m%Y%H%M%S)
 
 mkdir -p  results
 mkdir -p  logs
-export LOG_FILE=logs/${USE_CASE}_"$TIMESTAMP".log
-export STD_OUT=logs/${USE_CASE}_"$TIMESTAMP".out
-export RESULT_FILE=results/${USE_CASE}_"$TIMESTAMP"
-export HTML_RESULT_FILE=results/${USE_CASE}_"$TIMESTAMP".html
+export LOG_FILE=logs/${USE_CASE}/${USE_CASE}_"$TIMESTAMP".log
+export STD_OUT=logs/${USE_CASE}/${USE_CASE}_"$TIMESTAMP".out
+export RESULT_FILE=results/${USE_CASE}/${USE_CASE}_"$TIMESTAMP"
+export HTML_RESULT_FILE=results/${USE_CASE}/${USE_CASE}_"$TIMESTAMP".html
 
 echo "ENDPOINT_NAME: $ENDPOINT_NAME"
 echo "USE_CASE: $USE_CASE"
