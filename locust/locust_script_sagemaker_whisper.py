@@ -13,7 +13,6 @@ from locust.contrib.fasthttp import FastHttpUser
 
 from locust import task, events
 
-region = os.environ["REGION"]
 payload_file = os.environ["PAYLOAD_FILE"]
 payload = None
 # Read file into memory
@@ -24,11 +23,13 @@ with open(payload_file, 'rb') as f:
 class BotoClient:
     def __init__(self, host):
         # Consider removing retry logic to get accurate picture of failure in locust
+        region = os.environ["REGION"]
         config = Config(
             region_name=region, retries={"max_attempts": 0, "mode": "standard"}
         )
         self.sagemaker_client = boto3.client("sagemaker-runtime", config=config)
         self.endpoint_name = host
+        self.content_type = os.environ["CONTENT_TYPE"]
         # Log the details above
         logging.debug("endpoint_name=%s, payload_file=%s", self.endpoint_name, payload_file)
 
@@ -49,7 +50,7 @@ class BotoClient:
             response = self.sagemaker_client.invoke_endpoint(
                 EndpointName=self.endpoint_name,
                 Body=payload,
-                ContentType="audio/wav"
+                ContentType=self.content_type
             )
             response_string = json.loads(response['Body'].read().decode())
             logging.debug("Response Body:%s", response_string)
@@ -85,5 +86,7 @@ if __name__ == "__main__":
     logging.info("HOST=%s", os.environ["HOST"])
     logging.info("REGION=%s", os.environ["REGION"])
     logging.info("PAYLOAD_FILE=%s", os.environ["PAYLOAD_FILE"])
+    os.environ["CONTENT_TYPE"]='audio/x-audio'
+    logging.info("CONTENT_TYPE=%s", os.environ["CONTENT_TYPE"])
     client = BotoClient(os.environ["HOST"])
     client.send()
