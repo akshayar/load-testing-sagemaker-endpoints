@@ -36,8 +36,8 @@ export TIMESTAMP=$(date +%d%m%Y%H%M%S)
 
 #replace with the locust script that you are testing, this is the locust_script that will be used to make the InvokeEndpoint API calls.
 
-mkdir -p  results
-mkdir -p  logs
+mkdir -p  results/${USE_CASE}
+mkdir -p  logs/${USE_CASE}
 export LOG_FILE=logs/${USE_CASE}/${USE_CASE}_"$TIMESTAMP".log
 export STD_OUT=logs/${USE_CASE}/${USE_CASE}_"$TIMESTAMP".out
 export RESULT_FILE=results/${USE_CASE}/${USE_CASE}_"$TIMESTAMP"
