@@ -12,6 +12,7 @@ import gevent.monkey
 gevent.monkey.patch_all()
 
 import boto3
+import botocore
 from botocore.config import Config
 from locust.contrib.fasthttp import FastHttpUser
 
@@ -158,9 +159,9 @@ if __name__ == "__main__":
     # os.environ["CONTENT_TYPE"] = "application/json"
     # os.environ["PAYLOAD_FILE"] = "chat.txt"
     # os.environ["MAX_NEW_TOKENS"] = "500"
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.DEBUG)
     logging.info("Starting locust script")
-    logging.info("MODEL_ID=%s", os.environ["MODEL_ID"])
+    logging.info("MODEL_ID=%s", os.environ["ENDPOINT_NAME"])
     logging.info("REGION=%s", os.environ["REGION"])
     logging.info("PAYLOAD_FILE=%s", os.environ["PAYLOAD_FILE"])
     logging.info("MAX_NEW_TOKENS=%s", os.environ["MAX_NEW_TOKENS"])

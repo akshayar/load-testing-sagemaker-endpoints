@@ -13,9 +13,10 @@ from locust.contrib.fasthttp import FastHttpUser
 
 from locust import task, events
 region = os.environ["REGION"]
-content_type = os.environ["CONTENT_TYPE"]
 payload_file = os.environ["PAYLOAD_FILE"]
 max_new_tokens = os.environ["MAX_NEW_TOKENS"]
+model_id = os.environ["ENDPOINT_NAME"]
+content_type = "application/json"
 sampPayloads = []
 with open(payload_file, "r") as f:
     sampPayloads = f.read().splitlines()
@@ -26,7 +27,7 @@ class BotoClient:
             region_name=region, retries={"max_attempts": 0, "mode": "standard"}
         )
         self.bedrock_client = boto3.client("bedrock-runtime", config=config)
-        self.model_id = host.split("/")[-1]
+        self.model_id = model_id
         self.content_type = content_type
         self.max_new_tokens = int(max_new_tokens)
         self.prompt = random.choice(sampPayloads)
@@ -39,7 +40,7 @@ class BotoClient:
     def send(self):
         request_meta = {
             "request_type": "InvokeEndpoint",
-            "name": "SageMaker",
+            "name": "Bedrock",
             "start_time": time.time(),
             "response_length": 0,
             "response": None,
@@ -84,6 +85,7 @@ class BotoUser(FastHttpUser):
     abstract = True
 
     def __init__(self, env):
+        self.host="http://localhost:8888"
         super().__init__(env)
         self.client = BotoClient(self.host)
 
@@ -101,9 +103,9 @@ if __name__ == "__main__":
     #os.environ["CONTENT_TYPE"] = "application/json"
     #os.environ["PAYLOAD_FILE"] = "chat.txt"
     #os.environ["MAX_NEW_TOKENS"] = "500"
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.DEBUG)
     logging.info("Starting locust script")
-    logging.info("HOST=%s", os.environ["HOST"])
+    logging.info("MODEL_ID=%s", os.environ["ENDPOINT_NAME"])
     logging.info("REGION=%s", os.environ["REGION"])
     logging.info("CONTENT_TYPE=%s", os.environ["CONTENT_TYPE"])
     logging.info("PAYLOAD_FILE=%s", os.environ["PAYLOAD_FILE"])
