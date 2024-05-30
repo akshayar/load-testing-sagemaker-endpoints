@@ -85,6 +85,11 @@ class BotoClient:
                 logging.info("Error response as diff=%s", str(diff))
                 raise Exception("Error response as diff=%s", str(diff))
             logging.info("response_time_ms=%s | response_time_last_token_ms=%s",str(response_time_ms), str(response_time_last_token_ms))
+        except botocore.exceptions.ClientError as error:
+            if error.response['Error']['Code'] == 'LimitExceededException':
+                logger.warn('API call limit exceeded; exiting')
+                self.user.environment.reached_end = True
+                self.user.environment.runner.quit()
         except Exception as e:
             traceback.print_exc()
             logging.error(e)

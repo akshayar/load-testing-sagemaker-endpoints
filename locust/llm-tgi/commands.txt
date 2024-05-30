@@ -1,0 +1,5 @@
+./test-py-script.sh llm-tgi/locust_script_tgi_streaming.py http://ip-172-31-23-118.ec2.internal:8080 ../test-data/chat-1000-tokens.txt
+
+./run-multiple-distributed.sh http://ip-172-31-23-118.ec2.internal:8080 \
+./llm-tgi/multi-run-config.sh ./llm-tgi/locust_script_tgi_streaming.py \
+1,5,10,15,20,30,35,40,45,50  10  llama3_8B_tgi_g5xlarge

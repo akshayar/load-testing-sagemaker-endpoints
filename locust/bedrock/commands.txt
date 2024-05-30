@@ -1,0 +1,5 @@
+./test-py-script.sh bedrock/locust_script_bedrock_streaming.py meta.llama3-8b-instruct-v1:0 ../test-data/chat-1000-tokens.txt
+
+./run-multiple-distributed.sh meta.llama3-8b-instruct-v1:0 \
+./bedrock/multi-run-config.sh ./bedrock/locust_script_bedrock_streaming.py \
+1,5,10,15,20,30,35,40,45,50  10  llama3_8B_bedrock_g5xlarge
