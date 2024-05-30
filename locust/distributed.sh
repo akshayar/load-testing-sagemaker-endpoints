@@ -1,4 +1,8 @@
 #!/bin/bash
+function print_help(){
+    echo "Usage: ./distributed.sh <<endpoint-name>> [config.sh] [locust_script.py] [use case label]"
+    echo "Example: ./distributed.sh meta.llama2-13b-chat-v1 config.sh locust_script.py single-user-test"
+}
 function default_if_empty() {
     if [ -z "$2" ]; then
       echo "$1"
@@ -20,7 +24,8 @@ else
   source "${PROPERTIES_FILE}"
 fi
 
-export USE_CASE=$(default_if_empty test "$3")
+export SCRIPT=$(default_if_empty locust_script.py "$3")
+export USE_CASE=$(default_if_empty test "$4")
 export CONTENT_TYPE=$(default_if_empty application/json "${CONTENT_TYPE}")
 export RUN_TIME=$(default_if_empty 10m "${RUN_TIME}")
 export PAYLOAD_FILE=$(default_if_empty test.txt "${PAYLOAD_FILE}")
@@ -29,7 +34,7 @@ export USERS=$(default_if_empty 10 "${USERS}")
 export WORKERS=$(default_if_empty 10 "${WORKERS}")
 export LOCUST_UI=$(default_if_empty false "${LOCUST_UI}")
 export MAX_NEW_TOKENS=$(default_if_empty 256 "${MAX_NEW_TOKENS}")
-export SCRIPT=$(default_if_empty locust_script.py "${SCRIPT}")
+
 
 ## Create a string with DDMMYYYYHHmmSS format
 export TIMESTAMP=$(date +%d%m%Y%H%M%S)

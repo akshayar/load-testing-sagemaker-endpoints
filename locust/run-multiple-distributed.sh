@@ -1,7 +1,7 @@
 #!/bin/bash
 function print_help {
-    echo "Usage ./run-multiple.sh <<endpoint-name>> <<config.sh>> <<users>> <<sleep-duration>> <usecase-label>"
-    echo "Example ./run-multiple.sh http://ip-172-31-23-118.ec2.internal:8080 config-tgi-1u.sh 1,2 1m testing"
+    echo "Usage ./run-multiple-distributed.sh <<endpoint-name>> <<config.sh>> <<locust-script>> <<users>> <<run-time-minutes>> <usecase-label>"
+    echo "Example ./run-multiple-distributed.sh http://ip-172-31-23-118.ec2.internal:8080 config-tgi-1u.sh locust_script.py 1,2 1 testing"
 }
 function default_if_empty() {
     if [ -z "$2" ]; then
@@ -12,9 +12,12 @@ function default_if_empty() {
 }
 export ENDPOINT_NAME=$1
 PROPERTY_FILE=$2
-users=$3
-sleep_duration=$4
-use_case_label=$5
+locust_script=$3
+users=$4
+run_time_mins=$5
+use_case_label=$6
+sleep_time_mins=$((run_time_mins+1))
+sleep_time_seconds=$((sleep_time_mins*60))
 use_case_label=$(default_if_empty "-lb-llama3" "$use_case_label")
 ## Check if input is empty. If empty print help
 if [ -z "$ENDPOINT_NAME" ] || [ -z "$PROPERTY_FILE" ] || [ -z "$users" ]; then
@@ -32,11 +35,11 @@ do
     echo "Running $user"
     export USERS=$user
     export WORKERS=$user
-    export RUN_TIME=5m
-    echo "Executing ./distributed.sh $ENDPOINT_NAME "$2" "$user"_"$use_case_label" "
-    ./distributed.sh $ENDPOINT_NAME "$2" "$user"_"$use_case_label" ;
-    echo "Sleeping for $sleep_duration"
-    sleep "$sleep_duration" ;
+    export RUN_TIME="${run_time_mins}""m"
+    echo "Executing ./distributed.sh $ENDPOINT_NAME "$2" $locust_script "$user"_"$use_case_label" "
+    ./distributed.sh $ENDPOINT_NAME "$2" $locust_script "$user"_"$use_case_label" ;
+    echo "Sleeping for $sleep_time_seconds seconds"
+    sleep "$sleep_time_seconds" ;
     # Check the status of last command and exit if it failed
     if [ $? -ne 0 ]; then
         echo "Last command failed. Exiting"

@@ -7,7 +7,7 @@ class QuickstartUser(HttpUser):
     @task
     def inference(self):
         fileIn = {
-            "file": open('samples_jfk.wav', "rb"),
+            "file": open('../test-data/samples_jfk.wav', "rb"),
             "temperature": '0.0',
             "temperature_inc": '0.2',
             "response_format": 'json'

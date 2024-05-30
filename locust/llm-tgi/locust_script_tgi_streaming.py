@@ -23,9 +23,18 @@ class HuggingFaceTGIClient:
         logging.debug("host=%s, prompt=%s, max_new_tokens:%s", host, self.prompt, self.max_new_tokens)
 
     def send(self):
-        request_meta = {
-            "request_type": "InvokeEndpoint",
-            "name": "SageMaker",
+        first_token_metadata = {
+            "request_type": "FirstToken",
+            "name": "HF_TGI",
+            "start_time": time.time(),
+            "response_length": 0,
+            "response": None,
+            "context": {},
+            "exception": None,
+        }
+        last_token_metadata = {
+            "request_type": "LastToken",
+            "name": "HF_TGI",
             "start_time": time.time(),
             "response_length": 0,
             "response": None,
@@ -38,15 +47,25 @@ class HuggingFaceTGIClient:
             token = self.tgi_client.text_generation(prompt=self.prompt, max_new_tokens=self.max_new_tokens, stream=True)
             response_time_ms = (time.perf_counter() - start_perf_counter) * 1000
             logging.info("Prompt: %s | Generated String:%s", self.prompt, token)
+            count = 1
             for i in token:
-                logging.info("Generated String:%s", i)
-
-            logging.info("response_time_ms=%s",str(response_time_ms))
-            events.request.fire(**request_meta)
+                logging.debug("Generated String:%s", i)
+                if count == 1:
+                    first_token_metadata["response_time"] = (time.perf_counter() - start_perf_counter) * 1000
+                count += 1
+            last_token_metadata["response_time"] = (time.perf_counter() - start_perf_counter) * 1000
+            diff=last_token_metadata["response_time"]-first_token_metadata["response_time"]
+            if diff<=5:
+                logging.info("Error response as diff=%s", str(diff))
+                raise Exception("Error response as diff=%s", str(diff))
+            logging.info("response_time_first_token_ms=%s | response_time_last_token_ms=%s",str(first_token_metadata["response_time"]), str(last_token_metadata["response_time"]))
         except Exception as e:
             traceback.print_exc()
             logging.error(e)
-            request_meta["exception"] = e
+            first_token_metadata["exception"] = e
+            last_token_metadata["exception"] = e
+        events.request.fire(**first_token_metadata)
+        events.request.fire(**last_token_metadata)
 
 
 class BotoUser(FastHttpUser):
