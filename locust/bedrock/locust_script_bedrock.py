@@ -8,6 +8,7 @@ import gevent.monkey
 gevent.monkey.patch_all()
 
 import boto3
+import botocore
 from botocore.config import Config
 from locust.contrib.fasthttp import FastHttpUser
 
@@ -63,6 +64,11 @@ class BotoClient:
             generated_string = response_body.get('generation')
             string_len=len(generated_string.split())
             logging.info("Prompt: %s | Generated String:%s",self.prompt,generated_string)
+        except botocore.exceptions.ClientError as error:
+            if error.response['Error']['Code'] == 'LimitExceededException':
+                logging.warn('API call limit exceeded; exiting')
+                self.user.environment.reached_end = True
+                self.user.environment.runner.quit()
         except Exception as e:
             traceback.print_exc()
             logging.error(e)
