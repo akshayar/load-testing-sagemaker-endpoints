@@ -23,6 +23,7 @@ payload_file = os.environ["PAYLOAD_FILE"]
 max_new_tokens = os.environ["MAX_NEW_TOKENS"]
 model_id = os.environ["ENDPOINT_NAME"]
 content_type = "application/json"
+min_latency=50
 
 sampPayloads = []
 with open(payload_file, "r") as f:
@@ -82,7 +83,7 @@ class BotoClient:
             first_token_metadata["response_time"] = response_time_ms
             last_token_metadata["response_time"] = response_time_last_token_ms
             diff=response_time_last_token_ms-response_time_ms
-            if diff<=5:
+            if diff <= min_latency:
                 logging.info("Error response as diff=%s", str(diff))
                 raise Exception("Error response as diff=%s", str(diff))
             logging.info("response_time_ms=%s | response_time_last_token_ms=%s",str(response_time_ms), str(response_time_last_token_ms))

@@ -9,6 +9,7 @@ from locust.contrib.fasthttp import FastHttpUser
 
 payload_file = os.environ["PAYLOAD_FILE"]
 max_new_tokens = os.environ["MAX_NEW_TOKENS"]
+min_latency=50
 
 sampPayloads = []
 with open(payload_file, "r") as f:
