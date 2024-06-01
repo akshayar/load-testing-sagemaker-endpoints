@@ -24,6 +24,9 @@ def get_env_or_default(env_name, default_value):
     else:
         return default_value
 
+def wait_to_managed_throttling():
+    time.sleep(10)
+
 region = os.environ["REGION"]
 payload_file = os.environ["PAYLOAD_FILE"]
 max_new_tokens = os.environ["MAX_NEW_TOKENS"]
@@ -107,6 +110,7 @@ class BotoClient:
             last_token_metadata["exception"] = e
         events.request.fire(**first_token_metadata)
         events.request.fire(**last_token_metadata)
+        wait_to_managed_throttling()
 
     def get_first_string(self, response):
         try:
