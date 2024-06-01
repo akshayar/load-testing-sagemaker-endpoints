@@ -80,7 +80,7 @@ class BotoClient:
         start_perf_counter = time.perf_counter()
 
         try:
-            logging.debug("Payload:%s", self.payload)
+            logging.info("Payload:%s", self.payload)
             response = self.bedrock_client.invoke_model_with_response_stream(
                 body=self.payload,
                 modelId=self.model_id,
