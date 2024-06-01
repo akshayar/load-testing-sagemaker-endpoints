@@ -110,7 +110,6 @@ class BotoClient:
             last_token_metadata["exception"] = e
         events.request.fire(**first_token_metadata)
         events.request.fire(**last_token_metadata)
-        wait_to_managed_throttling()
 
     def get_first_string(self, response):
         try:
