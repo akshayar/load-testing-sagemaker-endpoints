@@ -18,6 +18,10 @@ payload_file = os.environ["PAYLOAD_FILE"]
 max_new_tokens = os.environ["MAX_NEW_TOKENS"]
 model_id = os.environ["ENDPOINT_NAME"]
 content_type = "application/json"
+if "TEMPERATURE" in os.environ:
+    temperature = os.environ["TEMPERATURE"]
+else:
+    temperature = 1.0
 sampPayloads = []
 with open(payload_file, "r") as f:
     sampPayloads = f.read().splitlines()
@@ -33,7 +37,8 @@ class BotoClient:
         self.max_new_tokens = int(max_new_tokens)
         self.prompt = random.choice(sampPayloads)
         self.payload = json.dumps({"prompt": self.prompt,
-                                   "max_gen_len": self.max_new_tokens
+                                   "max_gen_len": self.max_new_tokens,
+                                   "temperature": float(temperature)
                                    })
         logging.debug("model_id=%s, content_type=%s, payload=%s",
                      self.model_id, self.content_type, self.payload)
