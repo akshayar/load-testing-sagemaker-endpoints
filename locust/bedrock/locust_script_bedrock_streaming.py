@@ -18,16 +18,22 @@ from locust.contrib.fasthttp import FastHttpUser
 
 from locust import task, events
 
+def get_env_or_default(env_name, default_value):
+    if env_name in os.environ:
+        return os.environ[env_name]
+    else:
+        return default_value
+
+def wait_to_managed_throttling():
+    time.sleep(10)
+
 region = os.environ["REGION"]
 payload_file = os.environ["PAYLOAD_FILE"]
 max_new_tokens = os.environ["MAX_NEW_TOKENS"]
 model_id = os.environ["ENDPOINT_NAME"]
-if "TEMPERATURE" in os.environ:
-    temperature = os.environ["TEMPERATURE"]
-else:
-    temperature = 1.0
+temperature = get_env_or_default("TEMPERATURE", 1.0)
+min_latency = get_env_or_default("MIN_LATENCY", 100)
 content_type = "application/json"
-min_latency=50
 
 sampPayloads = []
 with open(payload_file, "r") as f:
@@ -104,6 +110,7 @@ class BotoClient:
             last_token_metadata["exception"] = e
         events.request.fire(**first_token_metadata)
         events.request.fire(**last_token_metadata)
+        wait_to_managed_throttling()
 
     def get_first_string(self, response):
         try:
