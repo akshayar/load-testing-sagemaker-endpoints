@@ -8,14 +8,20 @@ import gevent.monkey
 gevent.monkey.patch_all()
 
 import boto3
+import botocore
 from botocore.config import Config
 from locust.contrib.fasthttp import FastHttpUser
 
 from locust import task, events
 region = os.environ["REGION"]
-content_type = os.environ["CONTENT_TYPE"]
 payload_file = os.environ["PAYLOAD_FILE"]
 max_new_tokens = os.environ["MAX_NEW_TOKENS"]
+model_id = os.environ["ENDPOINT_NAME"]
+content_type = "application/json"
+if "TEMPERATURE" in os.environ:
+    temperature = os.environ["TEMPERATURE"]
+else:
+    temperature = 1.0
 sampPayloads = []
 with open(payload_file, "r") as f:
     sampPayloads = f.read().splitlines()
@@ -26,12 +32,13 @@ class BotoClient:
             region_name=region, retries={"max_attempts": 0, "mode": "standard"}
         )
         self.bedrock_client = boto3.client("bedrock-runtime", config=config)
-        self.model_id = host.split("/")[-1]
+        self.model_id = model_id
         self.content_type = content_type
         self.max_new_tokens = int(max_new_tokens)
         self.prompt = random.choice(sampPayloads)
         self.payload = json.dumps({"prompt": self.prompt,
-                                   "max_gen_len": self.max_new_tokens
+                                   "max_gen_len": self.max_new_tokens,
+                                   "temperature": float(temperature)
                                    })
         logging.debug("model_id=%s, content_type=%s, payload=%s",
                      self.model_id, self.content_type, self.payload)
@@ -39,7 +46,7 @@ class BotoClient:
     def send(self):
         request_meta = {
             "request_type": "InvokeEndpoint",
-            "name": "SageMaker",
+            "name": "Bedrock",
             "start_time": time.time(),
             "response_length": 0,
             "response": None,
@@ -62,6 +69,11 @@ class BotoClient:
             generated_string = response_body.get('generation')
             string_len=len(generated_string.split())
             logging.info("Prompt: %s | Generated String:%s",self.prompt,generated_string)
+        except botocore.exceptions.ClientError as error:
+            if error.response['Error']['Code'] == 'LimitExceededException':
+                logging.warn('API call limit exceeded; exiting')
+                self.user.environment.reached_end = True
+                self.user.environment.runner.quit()
         except Exception as e:
             traceback.print_exc()
             logging.error(e)
@@ -84,6 +96,7 @@ class BotoUser(FastHttpUser):
     abstract = True
 
     def __init__(self, env):
+        self.host="http://localhost:8888"
         super().__init__(env)
         self.client = BotoClient(self.host)
 
@@ -103,7 +116,7 @@ if __name__ == "__main__":
     #os.environ["MAX_NEW_TOKENS"] = "500"
     logging.basicConfig(level=logging.INFO)
     logging.info("Starting locust script")
-    logging.info("HOST=%s", os.environ["HOST"])
+    logging.info("MODEL_ID=%s", os.environ["ENDPOINT_NAME"])
     logging.info("REGION=%s", os.environ["REGION"])
     logging.info("CONTENT_TYPE=%s", os.environ["CONTENT_TYPE"])
     logging.info("PAYLOAD_FILE=%s", os.environ["PAYLOAD_FILE"])

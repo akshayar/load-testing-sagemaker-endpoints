@@ -12,15 +12,27 @@ import gevent.monkey
 gevent.monkey.patch_all()
 
 import boto3
+import botocore
 from botocore.config import Config
 from locust.contrib.fasthttp import FastHttpUser
 
 from locust import task, events
 
+def get_env_or_default(env_name, default_value):
+    if env_name in os.environ:
+        return os.environ[env_name]
+    else:
+        return default_value
+
+def wait_to_managed_throttling():
+    time.sleep(10)
+
 region = os.environ["REGION"]
 payload_file = os.environ["PAYLOAD_FILE"]
 max_new_tokens = os.environ["MAX_NEW_TOKENS"]
 model_id = os.environ["ENDPOINT_NAME"]
+temperature = get_env_or_default("TEMPERATURE", 1.0)
+min_latency = get_env_or_default("MIN_LATENCY", 100)
 content_type = "application/json"
 
 sampPayloads = []
@@ -40,7 +52,8 @@ class BotoClient:
         self.max_new_tokens = int(max_new_tokens)
         self.prompt = random.choice(sampPayloads)
         self.payload = json.dumps({"prompt": self.prompt,
-                                   "max_gen_len": self.max_new_tokens
+                                   "max_gen_len": self.max_new_tokens,
+                                   "temperature": float(temperature)
                                    })
         logging.debug("model_id=%s, content_type=%s, payload=%s",
                       self.model_id, self.content_type, self.payload)
@@ -67,7 +80,7 @@ class BotoClient:
         start_perf_counter = time.perf_counter()
 
         try:
-            logging.debug("Payload:%s", self.payload)
+            logging.info("Payload:%s", self.payload)
             response = self.bedrock_client.invoke_model_with_response_stream(
                 body=self.payload,
                 modelId=self.model_id,
@@ -81,13 +94,13 @@ class BotoClient:
             first_token_metadata["response_time"] = response_time_ms
             last_token_metadata["response_time"] = response_time_last_token_ms
             diff=response_time_last_token_ms-response_time_ms
-            if diff<=5:
+            if diff <= min_latency:
                 logging.info("Error response as diff=%s", str(diff))
                 raise Exception("Error response as diff=%s", str(diff))
             logging.info("response_time_ms=%s | response_time_last_token_ms=%s",str(response_time_ms), str(response_time_last_token_ms))
         except botocore.exceptions.ClientError as error:
             if error.response['Error']['Code'] == 'LimitExceededException':
-                logger.warn('API call limit exceeded; exiting')
+                logging.warn('API call limit exceeded; exiting')
                 self.user.environment.reached_end = True
                 self.user.environment.runner.quit()
         except Exception as e:
@@ -160,7 +173,7 @@ if __name__ == "__main__":
     # os.environ["MAX_NEW_TOKENS"] = "500"
     logging.basicConfig(level=logging.INFO)
     logging.info("Starting locust script")
-    logging.info("MODEL_ID=%s", os.environ["MODEL_ID"])
+    logging.info("MODEL_ID=%s", os.environ["ENDPOINT_NAME"])
     logging.info("REGION=%s", os.environ["REGION"])
     logging.info("PAYLOAD_FILE=%s", os.environ["PAYLOAD_FILE"])
     logging.info("MAX_NEW_TOKENS=%s", os.environ["MAX_NEW_TOKENS"])
