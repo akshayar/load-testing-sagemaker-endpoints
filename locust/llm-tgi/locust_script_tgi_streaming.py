@@ -84,7 +84,7 @@ class MyUser(BotoUser):
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.DEBUG)
     logging.info("Starting locust script")
     logging.info("HOST=%s", os.environ["HOST"])
     logging.info("CONTENT_TYPE=%s", os.environ["CONTENT_TYPE"])
