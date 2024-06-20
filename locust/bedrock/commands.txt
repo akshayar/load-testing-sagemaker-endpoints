@@ -25,3 +25,4 @@
 
 ./test-py-script.sh ./bedrock/locust_script_bedrock_streaming.py meta.llama3-70b-instruct-v1:0 ../test-data/llama3-instruct-1000.txt
 ./test-py-script.sh ./bedrock/locust_script_bedrock.py meta.llama3-70b-instruct-v1:0 ../test-data/llama3-instruct-1000.txt
+
