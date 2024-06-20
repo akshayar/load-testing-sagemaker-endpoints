@@ -17,15 +17,8 @@ from botocore.config import Config
 from locust.contrib.fasthttp import FastHttpUser
 
 from locust import task, events
+from bedrock_script_common import *
 
-def get_env_or_default(env_name, default_value):
-    if env_name in os.environ:
-        return os.environ[env_name]
-    else:
-        return default_value
-
-def wait_to_managed_throttling():
-    time.sleep(10)
 
 region = os.environ["REGION"]
 payload_file = os.environ["PAYLOAD_FILE"]
@@ -34,10 +27,12 @@ model_id = os.environ["ENDPOINT_NAME"]
 temperature = get_env_or_default("TEMPERATURE", 1.0)
 min_latency = get_env_or_default("MIN_LATENCY", 100)
 content_type = "application/json"
+get_next_function = find_get_next_function(model_id)
 
-sampPayloads = []
+
+samplePayloads = []
 with open(payload_file, "r") as f:
-    sampPayloads = f.read().splitlines()
+    samplePayloads = f.read().splitlines()
 
 
 class BotoClient:
@@ -50,11 +45,8 @@ class BotoClient:
         self.model_id = model_id
         self.content_type = content_type
         self.max_new_tokens = int(max_new_tokens)
-        self.prompt = random.choice(sampPayloads)
-        self.payload = json.dumps({"prompt": self.prompt,
-                                   "max_gen_len": self.max_new_tokens,
-                                   "temperature": float(temperature)
-                                   })
+        self.prompt = random.choice(samplePayloads)
+        self.payload = generate_payload(self.model_id,self.prompt,self.max_new_tokens,temperature)
         logging.debug("model_id=%s, content_type=%s, payload=%s",
                       self.model_id, self.content_type, self.payload)
 
@@ -87,18 +79,22 @@ class BotoClient:
                 accept=self.content_type,
                 contentType=self.content_type,
             )
+            logging.info("Response:%s", response)
             self.get_first_string(response)
             response_time_ms = (time.perf_counter() - start_perf_counter) * 1000
             self.drain_stream(response)
             response_time_last_token_ms = (time.perf_counter() - start_perf_counter) * 1000
             first_token_metadata["response_time"] = response_time_ms
             last_token_metadata["response_time"] = response_time_last_token_ms
-            diff=response_time_last_token_ms-response_time_ms
+            diff = response_time_last_token_ms - response_time_ms
             if diff <= min_latency:
                 logging.info("Error response as diff=%s", str(diff))
                 raise Exception("Error response as diff=%s", str(diff))
-            logging.info("response_time_ms=%s | response_time_last_token_ms=%s",str(response_time_ms), str(response_time_last_token_ms))
+            logging.info("response_time_ms=%s | response_time_last_token_ms=%s", str(response_time_ms),
+                         str(response_time_last_token_ms))
         except botocore.exceptions.ClientError as error:
+            traceback.print_exc()
+            logging.error(error)
             if error.response['Error']['Code'] == 'LimitExceededException':
                 logging.warn('API call limit exceeded; exiting')
                 self.user.environment.reached_end = True
@@ -122,7 +118,7 @@ class BotoClient:
                     if chunk:
                         chunk_obj = json.loads(chunk.get('bytes').decode())
                         logging.debug("Iterating response no %s : %s", str(i), chunk)
-                        text = chunk_obj['generation'].strip()
+                        text = get_next_function(chunk_obj)
                         if text and text != '\n' and len(text) != 0:
                             logging.info("First token: %s", text)
                             return text
@@ -131,6 +127,7 @@ class BotoClient:
             print("done")
 
     def drain_stream(self, response):
+        response_str = ""
         try:
             stream = response.get('body')
             logging.debug("Stream response:%s", stream)
@@ -140,11 +137,15 @@ class BotoClient:
                     chunk = event.get('chunk')
                     if chunk:
                         chunk_obj = json.loads(chunk.get('bytes').decode())
-                        logging.debug("Iterating response no %s : %s", str(i), chunk)
-                        text = chunk_obj['generation'].strip()
+                        logging.debug("Iterating response no %s : %s", str(i), chunk_obj)
+                        next_res = get_next_function(chunk_obj)
+                        if next_res is not None:
+                            response_str += get_next_function(chunk_obj)
                         i += 1
+            logging.info(response_str)
         except StopIteration:
-            print("done")
+            logging.info(response_str)
+            logging.error("done")
             return
 
 
@@ -152,7 +153,7 @@ class BotoUser(FastHttpUser):
     abstract = True
 
     def __init__(self, env):
-        self.host="http://localhost:8888"
+        self.host = "http://localhost:8888"
         super().__init__(env)
         self.client = BotoClient(self.host)
 
@@ -171,7 +172,7 @@ if __name__ == "__main__":
     # os.environ["CONTENT_TYPE"] = "application/json"
     # os.environ["PAYLOAD_FILE"] = "chat.txt"
     # os.environ["MAX_NEW_TOKENS"] = "500"
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
     logging.info("Starting locust script")
     logging.info("MODEL_ID=%s", os.environ["ENDPOINT_NAME"])
     logging.info("REGION=%s", os.environ["REGION"])

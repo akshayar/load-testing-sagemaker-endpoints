@@ -156,6 +156,42 @@ nohup ./run-multiple-distributed.sh http://ip-172-31-23-118.ec2.internal:8080 ./
 ./bedrock/locust_script_bedrock.py 1,5  \
 1 llama3_bedrock  
 ```
+## Sample Commands
+### Sample commands to test locust script for Bedrock
+```shell
+./test-py-script.sh ./bedrock/locust_script_bedrock_streaming.py anthropic.claude-3-sonnet-20240229-v1:0 ../test-data/chat-1000-tokens-anthropic.txt
+./test-py-script.sh ./bedrock/locust_script_bedrock.py anthropic.claude-3-sonnet-20240229-v1:0 ../test-data/chat-1000-tokens-anthropic.txt
+
+./test-py-script.sh ./bedrock/locust_script_bedrock_streaming.py anthropic.claude-3-haiku-20240307-v1:0 ../test-data/chat-1000-tokens-anthropic.txt
+./test-py-script.sh ./bedrock/locust_script_bedrock.py anthropic.claude-3-haiku-20240307-v1:0 ../test-data/chat-1000-tokens-anthropic.txt
+
+./test-py-script.sh ./bedrock/locust_script_bedrock_streaming.py mistral.mistral-7b-instruct-v0:2 ../test-data/chat-1000-tokens-mistral.txt
+./test-py-script.sh ./bedrock/locust_script_bedrock.py mistral.mistral-7b-instruct-v0:2 ../test-data/chat-1000-tokens-mistral.txt
+
+./test-py-script.sh ./bedrock/locust_script_bedrock_streaming.py mistral.mixtral-8x7b-instruct-v0:1 ../test-data/chat-1000-tokens-mistral.txt
+./test-py-script.sh ./bedrock/locust_script_bedrock.py mistral.mixtral-8x7b-instruct-v0:1 ../test-data/chat-1000-tokens-mistral.txt
+
+./test-py-script.sh ./bedrock/locust_script_bedrock_streaming.py mistral.mistral-large-2402-v1:0 ../test-data/chat-1000-tokens-mistral.txt
+./test-py-script.sh ./bedrock/locust_script_bedrock.py mistral.mistral-large-2402-v1:0 ../test-data/chat-1000-tokens-mistral.txt
+
+./test-py-script.sh ./bedrock/locust_script_bedrock_streaming.py meta.llama3-8b-instruct-v1:0 ../test-data/llama3-instruct-1000.txt
+./test-py-script.sh ./bedrock/locust_script_bedrock.py meta.llama3-8b-instruct-v1:0 ../test-data/llama3-instruct-1000.txt
+
+./test-py-script.sh ./bedrock/locust_script_bedrock_streaming.py meta.llama3-70b-instruct-v1:0 ../test-data/llama3-instruct-1000.txt
+./test-py-script.sh ./bedrock/locust_script_bedrock.py meta.llama3-70b-instruct-v1:0 ../test-data/llama3-instruct-1000.txt
+
+```
+
+### Sample commands load test Bedrock
+```shell
+## Update ./bedrock/single-run-config.sh update PAYLOAD_FILE
+./distributed.sh anthropic.claude-3-haiku-20240307-v1:0 ./bedrock/single-run-config.sh ./bedrock/locust_script_bedrock_streaming.py  claude_3_haiku_bedrock
+
+./distributed.sh meta.llama3-70b-instruct-v1:0 ./bedrock/single-run-config.sh ./bedrock/locust_script_bedrock_streaming.py llama3_70B_bedrock
+
+./distributed.sh meta.llama3-8b-instruct-v1:0 ./bedrock/single-run-config.sh ./bedrock/locust_script_bedrock_streaming.py llama3_8b_instruct_v1_bedrock
+
+```
 ## Security
 
 See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
