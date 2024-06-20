@@ -117,7 +117,7 @@ if __name__ == "__main__":
     #os.environ["CONTENT_TYPE"] = "application/json"
     #os.environ["PAYLOAD_FILE"] = "chat.txt"
     #os.environ["MAX_NEW_TOKENS"] = "500"
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
     logging.info("Starting locust script")
     logging.info("MODEL_ID=%s", os.environ["ENDPOINT_NAME"])
     logging.info("REGION=%s", os.environ["REGION"])
