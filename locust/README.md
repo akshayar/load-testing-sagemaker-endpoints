@@ -189,7 +189,7 @@ nohup ./run-multiple-distributed.sh http://ip-172-31-23-118.ec2.internal:8080 ./
 
 ./distributed.sh meta.llama3-70b-instruct-v1:0 ./bedrock/single-run-config.sh ./bedrock/locust_script_bedrock_streaming.py llama3_70B_bedrock
 
-./distributed.sh meta.llama3-8b-instruct-v1:0 ./bedrock/single-run-config.sh ./bedrock/locust_script_bedrock_streaming.py llama3_8b_instruct_v1_bedrock
+./distributed.sh mistral.mistral-7b-instruct-v0:2 ./bedrock/single-run-config.sh ./bedrock/locust_script_bedrock_streaming.py mistral_mistral_7b_instruct_bedrock
 
 ```
 ## Security
