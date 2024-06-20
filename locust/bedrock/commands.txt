@@ -3,3 +3,25 @@
 ./run-multiple-distributed.sh meta.llama3-8b-instruct-v1:0 \
 ./bedrock/multi-run-config.sh ./bedrock/locust_script_bedrock_streaming.py \
 1,5,10,15,20,30,35,40,45,50  10  llama3_8B_bedrock_g5xlarge
+
+
+./test-py-script.sh ./bedrock/locust_script_bedrock_streaming.py anthropic.claude-3-sonnet-20240229-v1:0 ../test-data/chat-1000-tokens-anthropic.txt
+./test-py-script.sh ./bedrock/locust_script_bedrock.py anthropic.claude-3-sonnet-20240229-v1:0 ../test-data/chat-1000-tokens-anthropic.txt
+
+./test-py-script.sh ./bedrock/locust_script_bedrock_streaming.py anthropic.claude-3-haiku-20240307-v1:0 ../test-data/chat-1000-tokens-anthropic.txt
+./test-py-script.sh ./bedrock/locust_script_bedrock.py anthropic.claude-3-haiku-20240307-v1:0 ../test-data/chat-1000-tokens-anthropic.txt
+
+./test-py-script.sh ./bedrock/locust_script_bedrock_streaming.py mistral.mistral-7b-instruct-v0:2 ../test-data/chat-1000-tokens-mistral.txt
+./test-py-script.sh ./bedrock/locust_script_bedrock.py mistral.mistral-7b-instruct-v0:2 ../test-data/chat-1000-tokens-mistral.txt
+
+./test-py-script.sh ./bedrock/locust_script_bedrock_streaming.py mistral.mixtral-8x7b-instruct-v0:1 ../test-data/chat-1000-tokens-mistral.txt
+./test-py-script.sh ./bedrock/locust_script_bedrock.py mistral.mixtral-8x7b-instruct-v0:1 ../test-data/chat-1000-tokens-mistral.txt
+
+./test-py-script.sh ./bedrock/locust_script_bedrock_streaming.py mistral.mistral-large-2402-v1:0 ../test-data/chat-1000-tokens-mistral.txt
+./test-py-script.sh ./bedrock/locust_script_bedrock.py mistral.mistral-large-2402-v1:0 ../test-data/chat-1000-tokens-mistral.txt
+
+./test-py-script.sh ./bedrock/locust_script_bedrock_streaming.py meta.llama3-8b-instruct-v1:0 ../test-data/llama3-instruct-1000.txt
+./test-py-script.sh ./bedrock/locust_script_bedrock.py meta.llama3-8b-instruct-v1:0 ../test-data/llama3-instruct-1000.txt
+
+./test-py-script.sh ./bedrock/locust_script_bedrock_streaming.py meta.llama3-70b-instruct-v1:0 ../test-data/llama3-instruct-1000.txt
+./test-py-script.sh ./bedrock/locust_script_bedrock.py meta.llama3-70b-instruct-v1:0 ../test-data/llama3-instruct-1000.txt

@@ -17,7 +17,7 @@ if [ -z "$1" ] || [ -z "$2" ] || [ "$1" == "-h" ]; then
     print_help
     exit 1
 fi
-export REGION=us-east-1
+export REGION=ap-south-1
 export CONTENT_TYPE=application/json
 export PAYLOAD_FILE=$(default_if_empty "instruct.txt" "$3")
 export MAX_NEW_TOKENS=100
