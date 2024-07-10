@@ -47,6 +47,7 @@ class BotoClient:
         self.max_new_tokens = int(max_new_tokens)
         self.prompt = random.choice(samplePayloads)
         self.payload = generate_payload(self.model_id,self.prompt,self.max_new_tokens,temperature)
+        self.final_output = []
         logging.debug("model_id=%s, content_type=%s, payload=%s",
                       self.model_id, self.content_type, self.payload)
 
@@ -87,9 +88,9 @@ class BotoClient:
             first_token_metadata["response_time"] = response_time_ms
             last_token_metadata["response_time"] = response_time_last_token_ms
             diff = response_time_last_token_ms - response_time_ms
-            if diff <= min_latency:
-                logging.info("Error response as diff=%s", str(diff))
-                raise Exception("Error response as diff=%s", str(diff))
+            if diff <= int(min_latency):
+                logging.info("Error response as diff=%s is less than %s", str(diff), str(min_latency))
+                raise Exception("Error response as diff=%s is less than %s", str(diff), str(min_latency))
             logging.info("response_time_ms=%s | response_time_last_token_ms=%s", str(response_time_ms),
                          str(response_time_last_token_ms))
         except botocore.exceptions.ClientError as error:
@@ -119,6 +120,7 @@ class BotoClient:
                         chunk_obj = json.loads(chunk.get('bytes').decode())
                         logging.debug("Iterating response no %s : %s", str(i), chunk)
                         text = get_next_function(chunk_obj)
+                        self.final_output.append(text)
                         if text and text != '\n' and len(text) != 0:
                             logging.info("First token: %s", text)
                             return text
@@ -131,6 +133,7 @@ class BotoClient:
         try:
             stream = response.get('body')
             logging.debug("Stream response:%s", stream)
+            next_res = ""
             i = 1
             if stream:
                 for event in stream:
@@ -139,10 +142,12 @@ class BotoClient:
                         chunk_obj = json.loads(chunk.get('bytes').decode())
                         logging.debug("Iterating response no %s : %s", str(i), chunk_obj)
                         next_res = get_next_function(chunk_obj)
+                        self.final_output.append(next_res)
                         if next_res is not None:
-                            response_str += get_next_function(chunk_obj)
+                            self.final_output.append(get_next_function(chunk_obj))
                         i += 1
-            logging.info(response_str)
+            logging.info("Last token: %s", next_res)
+            logging.info(self.final_output)
         except StopIteration:
             logging.info(response_str)
             logging.error("done")

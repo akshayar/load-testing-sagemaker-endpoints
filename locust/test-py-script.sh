@@ -21,6 +21,7 @@ export REGION=ap-south-1
 export CONTENT_TYPE=application/json
 export PAYLOAD_FILE=$(default_if_empty "instruct.txt" "$3")
 export MAX_NEW_TOKENS=100
+export MIN_LATENCY=4
 export HOST=$2
 export ENDPOINT_NAME=$2
 python $1

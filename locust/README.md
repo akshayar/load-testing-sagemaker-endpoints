@@ -1,5 +1,9 @@
 ## Setup
 1. Activate Python environment, and `pip install -r requirements.txt`.
+```shell
+## Go to source root and run
+pip install -r requirements.txt
+```
 ## Test your locust scripts
 ```shell
 cd locust

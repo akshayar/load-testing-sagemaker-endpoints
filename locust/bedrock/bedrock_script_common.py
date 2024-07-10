@@ -25,6 +25,8 @@ def wait_to_managed_throttling():
 def get_response_llama(response_body):
     return response_body.get('generation')
 
+def get_next_titan(chunk_obj):
+    return chunk_obj.get('outputText')
 
 def get_next_llama(chunk_obj):
     if 'generation' in chunk_obj:
@@ -49,7 +51,10 @@ def get_next_anthropic(chunk_obj):
     #     logging.error("No response")
     #     logging.info(chunk_obj)
 
-
+def get_response_titan(response_body):
+    contents = response_body.get('results')
+    for content in contents:
+        return content['outputText']
 
 def get_response_mistral(response_body):
     contents = response_body.get('outputs')
@@ -68,6 +73,8 @@ def find_response_function(model_id):
         return get_response_mistral
     elif 'anthropic.claude' in model_id:
         return get_response_anthropic
+    elif 'titan' in model_id:
+        return get_response_titan
     else:
         return get_response_llama
 
@@ -77,6 +84,8 @@ def find_get_next_function(model_id):
         return get_next_mistral
     elif 'anthropic.claude' in model_id:
         return get_next_anthropic
+    elif 'titan' in model_id:
+        return get_next_titan
     else:
         return get_next_llama
 
@@ -102,6 +111,12 @@ def generate_payload(model_id, prompt, max_new_tokens, temperature):
             ],
             "temperature": float(temperature),
         })
+    elif 'titan' in model_id:
+        return json.dumps({"inputText": prompt,
+                           "textGenerationConfig" : {
+                               "maxTokenCount": max_new_tokens,
+                               "temperature": float(temperature)
+                           }})
     else:
         return json.dumps({"prompt": prompt,
                            "max_gen_len": max_new_tokens,
